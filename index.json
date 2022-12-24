@@ -1,1 +1,1 @@
-[]
+[{"date":"23 December, 2022","subtitle":"프로젝트를 진행하다가 API 요청이 두번씩 간다던가, socket emit이 두 번 보내지는 경우를 겪은 적이 많다. console.log()가 두 번씩 찍히는 경험도 많다.","tags":"React","title":"React.StrictMode 알아보기","url":"/post/articles/react-strictmode/"}]

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+    
+  <title>React.StrictMode 알아보기 | Tech Blog | Hyewon</title>
+  <meta name="author" content="Hyewon Kang">
+  <meta name="description" content="StrictMode를 주석 처리해도 괜찮은가? 왜 필요한거지?">
+  <meta name="keywords" content="blog,developer,personal">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="React.StrictMode 알아보기"/>
+<meta name="twitter:description" content="StrictMode를 주석 처리해도 괜찮은가? 왜 필요한거지?"/>
+
+  <meta property="og:title" content="React.StrictMode 알아보기" />
+<meta property="og:description" content="StrictMode를 주석 처리해도 괜찮은가? 왜 필요한거지?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://HyewonKkang.github.io/post/articles/react-strictmode/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-12-23T06:42:45+09:00" />
+<meta property="article:modified_time" content="2022-12-23T06:42:45+09:00" />
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
+  
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <link rel="stylesheet" href="/sass/main.css">
+
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+  <script src=/js/lazysizes.min.js></script>
+
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  
+
+</head>
+
+
+
+<body ontouchstart="">
+  
+  
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://HyewonKkang.github.io/">Tech Blog | Hyewon</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+          <li><a href="https://github.com/HyewonKkang/" title="Github">Github</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+<style type="text/css">
+  header.intro-header {
+    position: relative;
+    background-image: url('');
+  }
+</style>
+
+<header class="intro-header style-text">
+
+  <div class="header-mask"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <div class="tags">
+            
+            <a class="tag" href="/tags/react/" title="React">React</a>
+            
+          </div>
+          <h1>React.StrictMode 알아보기</h1>
+          <h2 class="subheading"></h2>
+          <span class="meta">
+            Posted by  Hyewon Kang 
+            on Fri, Dec 23, 2022
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  
+
+
+<article>
+  <div class="container">
+    <div class="row">
+
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              post-container">
+        <img src="https://i.redd.it/xsak8d1y2tq61.jpg" />
+<p>프로젝트를 진행하다가 API 요청이 두번씩 간다던가, socket emit이 두 번 보내지는 경우를 겪은 적이 많다. console.log()가 두 번씩 찍히는 경험도 많다. 이는 index.tsx 파일의 <code>React.StrictMode</code>가 동작하기 때문인데 그동안 단순히 주석 처리를 하고 strict 모드를 비활성화한 상태로 이용하곤 했다. 이를 지우고 프로젝트를 실행해도 별다른 문제는 생기지 않는다.</p>
+<p>그렇다면 StrictMode는 왜 있는 것이며, 이렇게 지우고 사용해도 괜찮은 것일까.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#ff79c6">import</span> React <span style="color:#ff79c6">from</span> <span style="color:#f1fa8c">&#39;react&#39;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#ff79c6">import</span> ReactDOM <span style="color:#ff79c6">from</span> <span style="color:#f1fa8c">&#39;react-dom/client&#39;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#ff79c6">import</span> <span style="color:#f1fa8c">&#39;./index.css&#39;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#ff79c6">import</span> App <span style="color:#ff79c6">from</span> <span style="color:#f1fa8c">&#39;./App&#39;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span><span style="color:#ff79c6">const</span> root <span style="color:#ff79c6">=</span> ReactDOM.createRoot(<span style="color:#8be9fd;font-style:italic">document</span>.getElementById(<span style="color:#f1fa8c">&#39;root&#39;</span>) <span style="color:#ff79c6">as</span> HTMLElement);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>root.render(
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>    <span style="color:#6272a4">// &lt;React.StrictMode&gt;
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span><span style="color:#6272a4"></span>    &lt;<span style="color:#ff79c6">App</span> /&gt;,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>    <span style="color:#6272a4">// &lt;/React.StrictMode&gt;,
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span><span style="color:#6272a4"></span>);
+</span></span></code></pre></div><hr>
+<h1 id="strict-모드">Strict 모드<a class="anchorjs-link" href="#strict-%eb%aa%a8%eb%93%9c"></a></h1><p>우선 Strict Mode에 대해 정리해보자.</p>
+<p><a href="https://ko.reactjs.org/docs/strict-mode.html" target="_blank">리액트 공식 문서</a>에 따르면, “<strong>StrictMode는 애플리케이션 내의 잠재적인 문제를 알아내기 위한 도구이다. Strict 모드는 개발 모드에서만 활성화되기 때문에, 프로덕션 빌드에는 영향을 끼치지 않는다</strong>.”</p>
+<p>StrictMode는 index.tsx 외에도 프로젝트 내 어디서든 해당 모드의 활성화가 가능하다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#ff79c6">import</span> React <span style="color:#ff79c6">from</span> <span style="color:#f1fa8c">&#39;react&#39;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#8be9fd;font-style:italic">function</span> ExampleApplication() {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    <span style="color:#ff79c6">return</span> (
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>        &lt;<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>            &lt;<span style="color:#ff79c6">Header</span> /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>            &lt;<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>                <span style="color:#ff79c6">**</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>                &lt;<span style="color:#ff79c6">React.StrictMode</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>                    <span style="color:#ff79c6">**</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>                    &lt;<span style="color:#ff79c6">ComponentOne</span> /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>                    &lt;<span style="color:#ff79c6">ComponentTwo</span> /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>                    <span style="color:#ff79c6">**</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>                &lt;/<span style="color:#ff79c6">React.StrictMode</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>                <span style="color:#ff79c6">**</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>            &lt;/<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>            &lt;<span style="color:#ff79c6">Footer</span> /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>        &lt;/<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>    );
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>}
+</span></span></code></pre></div><p>위의 예에서는 ComponentOne과 ComponentTwo의 각각의 자손까지 Strict 모드 검사가 이루어진다고 한다. JavaScript에도 비슷한게 있다. 코드 파일 상단에 “use strict”를 써 놓으면 JS를 실행할 때 조금 더 엄격한 코드 검사가 이루어진다.</p>
+<p><strong>Strict 모드가 무언가 검사하기 위한 목적으로 사용되는 도구인지는 알겠다. 그럼 어떤 부분에서 실질적인 도움이 될까?</strong></p>
+<hr>
+<h1 id="strict-모드의-검사항목">Strict 모드의 검사항목<a class="anchorjs-link" href="#strict-%eb%aa%a8%eb%93%9c%ec%9d%98-%ea%b2%80%ec%82%ac%ed%95%ad%eb%aa%a9"></a></h1><p>공식문서에서 Strict모드의 현재 총 6가지 검사 항목을 안내한다. 그 중 세가지에 대해 알아봤다. (나머지 세가지 항목은 알고 있지 않아도 될 것 같아서 ..)</p>
+<blockquote>
+<p>나머지 3가지 항목</p>
+<ul>
+<li>레거시 문자열 ref 사용에 대한 경고</li>
+<li>레거시 context API 검사</li>
+<li>Ensuring reusable state (추후 리액트에 적용될 예정)</li>
+</ul>
+</blockquote>
+<h3 id="1-안전하지-않은-생명주기를-사용하는-컴포넌트-발견">1. 안전하지 않은 생명주기를 사용하는 컴포넌트 발견<a class="anchorjs-link" href="#1-%ec%95%88%ec%a0%84%ed%95%98%ec%a7%80-%ec%95%8a%ec%9d%80-%ec%83%9d%eb%aa%85%ec%a3%bc%ea%b8%b0%eb%a5%bc-%ec%82%ac%ec%9a%a9%ed%95%98%eb%8a%94-%ec%bb%b4%ed%8f%ac%eb%84%8c%ed%8a%b8-%eb%b0%9c%ea%b2%ac"></a></h3><p>deprecated된 메서드의 사용을 막아준다. 예로 <code>componentWillMount</code>, <code>componentWillReceiveProps</code>, <code>componentWillUpdate</code>와 같은 메서드를 사용자가 사용할 경우 경고 메세지를 띄워줄 수 있다.</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img data-src="https://user-images.githubusercontent.com/68578916/209234189-325a9ef9-d208-417e-ae0f-11942a65016f.png" data-action="zoom" alt="Untitled"  class="lazyload">
+  </a>
+  
+</figure></p>
+<p>특히 서드 파티 라이브러리를 사용할 때 해당 생명주기 함수들이 사용되지 않는다고 장담하기 어렵다. 또한, Strict 모드를 쓴다면 리액트가 향후 Release될 때 concurrent 렌더링의 이점을 얻을 수 있다.</p>
+<h3 id="2-권장되지-않는-finddomnode-사용에-대한-경고">2. 권장되지 않는 findDOMNode 사용에 대한 경고<a class="anchorjs-link" href="#2-%ea%b6%8c%ec%9e%a5%eb%90%98%ec%a7%80-%ec%95%8a%eb%8a%94-finddomnode-%ec%82%ac%ec%9a%a9%ec%97%90-%eb%8c%80%ed%95%9c-%ea%b2%bd%ea%b3%a0"></a></h3><p>findDOMNode는 한때 React에서 허용되었지만 이제는 더이상 사용되지 않는다. 이는 DOM노드에 직접 ref를 지정해 사용할 수 있게 되었기 때문이다. 현재 이를 사용하면 StrictMode에서는 ref 사용을 권장한다.</p>
+<ul>
+<li>findDOMNode : 주어진 클래스 인스턴스를 바탕으로 트리를 탐색해 DOM 노드를 찾는 메서드</li>
+</ul>
+<h3 id="3-예상치-못한-부작용-검사">3. 예상치 못한 부작용 검사<a class="anchorjs-link" href="#3-%ec%98%88%ec%83%81%ec%b9%98-%eb%aa%bb%ed%95%9c-%eb%b6%80%ec%9e%91%ec%9a%a9-%ea%b2%80%ec%82%ac"></a></h3><blockquote>
+<p><em>개념적으로 React는 두 단계로 동작합니다.</em></p>
+<ul>
+<li><strong>렌더링</strong> 단계는 특정 환경(예를 들어, DOM과 같이)에 어떤 변화가 필요한 지 결정하는 단계입니다.(expensive part) 이 과정에서 React는 <code>render</code>를 호출하여 이전 렌더와 결과값을 비교합니다.
+(*un a render lifecycle which includes: <code>constructor</code>, <code>componentWillMount</code>, <code>componentWillReceiveProps</code>,
+ <code>componentWillUpdate</code>, <code>getDerivedStateFromProps</code>, <code>shouldComponentUpdate</code>, <code>render</code>,
+ <code>setState</code> updater functions)</li>
+<li><strong>커밋</strong> 단계는 React가 변경 사항을 반영하는 단계입니다(React DOM의 경우 React가 DOM 노드를 추가, 변경 및 제거하는 단계를 말합니다). 이 단계에서 React는 <code>componentDidMount</code> 나 <code>componentDidUpdate</code> 와 같은 생명주기 메서드를 호출합니다.*</li>
+</ul>
+</blockquote>
+<p>즉, 렌더링 단계에서는 변화를 계산하는 단계다. 예를 들어 render 함수를 호출해 이전값과 비교하는 방식이다. 이렇게 계산한 변경을 반영하는 단계가 커밋이다.</p>
+<p>이러한 단계는 동시 모드에서 동일하게 유지되지만, 렌더 단계를 작은 조각으로 분할하여 렌더 단계를 일시 중지했다가 재개하여 긴 렌더링으로 브라우저를 차단하지 않도록 할 계획이다. 실제로 이는 React가 변경 사항을 커밋하기 전에 두 번 이상 렌더 라이프사이클을 트리거하거나 커밋하지 않고 렌더를 트리거할 수 있음을 의미한다(예: 오류가 발생했거나 상위 이벤트가 발생한 경우). 따라서 렌더 단계의 라이프사이클은 한 번 이상 호출할 수 있으므로 부작용을 포함하지 않는 것이 중요하다. 부작용을 포함할 경우 메모리 누수 및 잘못된 상태를 유발할 수 있다.</p>
+<p>이를 돕기 위해 개발 모드에서만 StrictMode는 라이프사이클에서 다음 메서드인 생성자, 렌더링, 상태 업데이트 프로그램 기능 설정 및 DerivatedStateFromProps를 두 번 호출하여 코드가 예상과 다르게 손상되거나 동작하는지 확인할 수 있다.</p>
+<p>Strict 모드가 자동으로 부작용을 찾아주는 것은 불가능하다. 하지만, 조금 더 예측할 수 있게끔 문제가 되는 부분을 발견하게 한다. 이를 위해 <strong>아래의 함수를 의도적으로 이중으로 호출하여 찾을 수 있다.</strong> strictMode가 그냥 두 번 렌더링 하면서 검사하는 건줄 알았는데, 렌더링 단계의 메서드를 의도적으로 두번씩 호출한다는 사실을 처음 알았다.</p>
+<blockquote>
+<p>클래스 컴포넌트의 <code>constructor</code>, <code>render</code> 그리고 <code>shouldComponentUpdate</code> 메서드</p>
+<ul>
+<li>클래스 컴포넌트의 <code>getDerivedStateFromProps</code> static 메서드</li>
+<li>함수 컴포넌트 바디</li>
+<li>State updater 함수 (<code>setState</code>의 첫 번째 인자)</li>
+<li><code>useState</code>, <code>useMemo</code> 그리고 <code>useReducer</code>에 전달되는 함수</li>
+</ul>
+</blockquote>
+<p><strong><em>두번 호출한다고 부작용을 찾을 수 있나?</em></strong></p>
+<p>이해 못하는 나같은 사람을 위해 예시 코드를 공식 문서에서 보여준다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">class</span> TopLevelRoute <span style="color:#ff79c6">extends</span> React.Component {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    <span style="color:#ff79c6">constructor</span>(props) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>        <span style="color:#ff79c6">super</span>(props);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>        SharedApplicationState.recordEvent(<span style="color:#f1fa8c">&#39;ExampleComponent&#39;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span>}
+</span></span></code></pre></div><p>컴포넌트의 constructor와 같은 메서드를 의도적으로 두 번 호출하면 strict mode가 이와 같은 패턴을 쉽게 찾을 수 있도록 한다.</p>
+<p>얼핏 보면 이 코드에는 문제가 없어 보인다. 하지만, <code>SharedApplicationState.recordEvent</code>의 연산 결과가 계속 달라진다면, 이 컴포넌트를 여러 번 인스턴스 화했을 때 애플리케이션의 상태를 잘못된 방향으로 이끌 수 있다. 이와 같은 이해하기 어려운 버그들은 개발 중에 나타나지 않을 수도 있고, 일관성이 없어 발견하지 못할 수도 있다.</p>
+<p>즉, 의도적으로 두번 호출시키면서 개발자가 오류를 발견할 수 있도록 도움을 주는 방식으로 정리할 수 있겠다.</p>
+<hr>
+<h1 id="결론">결론<a class="anchorjs-link" href="#%ea%b2%b0%eb%a1%a0"></a></h1><p>프로젝트가 개발 모드일 때만 StrictMode가 동작한다. 이는 잠재적인 이슈를 발견해주는 역할을 하기 때문에 굳이 지우고 사용할 이유는 없지만, 이를 지우고 쓰지 말란 이야기는 없다. 용도는 알았으니 위의 항목들을 검사할 때를 제외하곤 필요에 의해 지우고 사용해도 될 것 같다.</p>
+<hr>
+<h1 id="reference">Reference<a class="anchorjs-link" href="#reference"></a></h1><p><a href="https://ko.reactjs.org/docs/strict-mode.html" target="_blank">Strict 모드 - React</a></p>
+<p><a href="https://medium.com/nmc-techblog/wait-youre-not-using-react-strictmode-a9713927a33b" target="_blank">Wait, you&rsquo;re not using ?!</a></p>
+
+
+        <hr style="visibility: hidden;" />
+        <ul class="pager">
+          
+          
+        </ul>
+        <hr style="visibility: hidden;" />
+
+        
+        
+
+
+
+<div class="giscus" id="comments"></div>
+<script src="https://giscus.app/client.js"
+  data-repo="HyewonKkang/HyewonKkang.github.io"
+  data-repo-id="R_kgDOHuvyhw"
+  data-category="General"
+  data-category-id="DIC_kwDOHuvyh84CQjDo"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="top"
+  data-theme="light_tritanopia"
+  data-lang="en"
+  crossorigin="anonymous"
+  async>
+  </script>
+
+
+
+
+      </div>
+
+      
+      
+      
+      <div class="
+              col-lg-2 col-lg-offset-0
+              visible-lg-block
+              sidebar-container
+              catalog-container">
+        <div class="side-catalog">
+          <hr class="hidden-sm hidden-xs">
+          <h5>
+            <a class="catalog-toggle" href="#">CATALOG</a>
+          </h5>
+          <ul class="catalog-body"></ul>
+        </div>
+      </div>
+      
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              sidebar-container">
+
+        
+        
+        <section>
+  
+  
+  <hr class="hidden-sm hidden-xs">
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/react/">React</a>
+    
+  </div>
+</section>
+
+        
+        
+
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        <ul class="list-inline text-center">
+
+<li>
+  <a href="https://github.com/HyewonKkang" target="_blank">
+    <span class="fa-stack fa-lg">
+      <i class="fa fa-circle fa-stack-2x"></i>
+      <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+    </span>
+  </a>
+</li>
+
+<li>
+  <a href="https://www.instagram.com/hyewon_kkang" target="_blank">
+    <span class="fa-stack fa-lg">
+      <i class="fa fa-circle fa-stack-2x"></i>
+      <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+    </span>
+  </a>
+</li>
+
+<li>
+  <a href="mailto:gpffps369@gmail.com">
+    <span class="fa-stack fa-lg">
+      <i class="fa fa-circle fa-stack-2x"></i>
+      <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+    </span>
+  </a>
+</li></ul>
+
+        <p class="copyright text-muted">
+          Copyright &copy; Tech Blog | Hyewon 2022  
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src=/js/simple-jekyll-search.min.js></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+<script type="text/javascript">
+  function generateCatalog(selector) {
+    _containerSelector = 'div.post-container'
+    
+    var P = $(_containerSelector), a, n, t, l, i, c;
+    a = P.find('h1,h2,h3,h4');
+    
+    $(selector).html('')
+    
+    a.each(function () {
+      n = $(this).prop('tagName').toLowerCase();
+      i = "#" + $(this).prop('id');
+      t = $(this).text();
+      c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+      l = $('<li class="' + n + '_nav"></li>').append(c);
+      $(selector).append(l);
+    });
+    return true;
+  }
+
+  generateCatalog(".catalog-body");
+
+  
+  $(".catalog-toggle").click((function (e) {
+    e.preventDefault();
+    $('.side-catalog').toggleClass("fold")
+  }))
+</script>
+
+
+<script type="text/javascript" src='/js/jquery.nav.min.ade6bde8f9fcc6a4b40852cb892e9f5912340ab8fe1305149d917fdd16fffd8d.js'></script>
+<script>
+   $(document).ready( function () {
+    $('.catalog-body').onePageNav({
+      currentClass: "active",
+      changeHash: !1,
+      easing: "swing",
+      filter: "",
+      scrollSpeed: 700,
+      scrollOffset: 0,
+      scrollThreshold: .2,
+      begin: null,
+      end: null,
+      scrollChange: null,
+      padding: 80
+    });
+  });
+</script>
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+
+</body>
+
+</html>
