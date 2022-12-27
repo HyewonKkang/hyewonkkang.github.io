@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+    
+  <title>Canvas API로 채우기 기능 구현하기 | Tech Blog | Hyewon</title>
+  <meta name="author" content="Hyewon Kang">
+  <meta name="description" content="리액트에서 Canvas API를 이용해 그림판 색 채우기 기능을 구현해보자.">
+  <meta name="keywords" content="blog,developer,personal">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Canvas API로 채우기 기능 구현하기"/>
+<meta name="twitter:description" content="리액트에서 Canvas API를 이용해 그림판 색 채우기 기능을 구현해보자."/>
+
+  <meta property="og:title" content="Canvas API로 채우기 기능 구현하기" />
+<meta property="og:description" content="리액트에서 Canvas API를 이용해 그림판 색 채우기 기능을 구현해보자." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://HyewonKkang.github.io/post/articles/react-painting-canvas/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-12-26T06:42:45+09:00" />
+<meta property="article:modified_time" content="2022-12-26T06:42:45+09:00" />
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
+  
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <link rel="stylesheet" href="/sass/main.css">
+
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+  <script src=/js/lazysizes.min.js></script>
+
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  
+
+</head>
+
+
+
+<body ontouchstart="">
+  
+  
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://HyewonKkang.github.io/">Tech Blog | Hyewon</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+          <li><a href="https://github.com/HyewonKkang/" title="Github">Github</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+<style type="text/css">
+  header.intro-header {
+    position: relative;
+    background-image: url('');
+  }
+</style>
+
+<header class="intro-header style-text">
+
+  <div class="header-mask"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <div class="tags">
+            
+            <a class="tag" href="/tags/react/" title="React">React</a>
+            
+            <a class="tag" href="/tags/javascript/" title="JavaScript">JavaScript</a>
+            
+          </div>
+          <h1>Canvas API로 채우기 기능 구현하기</h1>
+          <h2 class="subheading"></h2>
+          <span class="meta">
+            Posted by  Hyewon Kang 
+            on Mon, Dec 26, 2022
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  
+
+
+<article>
+  <div class="container">
+    <div class="row">
+
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              post-container">
+        <p>현재 텔레스트레이션 게임 구현을 위해 리액트에서 canvas를 이용해 그림판을 구현 중에 있다. 그림판의 기능으로는 선 그리기, 지우기, 채우기, 초기화, 색상 변경을 목표로 하고 있는데 그 중에서 <strong>채우기 기능을 어떻게 구현해야 좋을지</strong> 고민이 있었다.</p>
+<p>채우기 기능은 moveTo(), lineTo() 등을 이용해 그린 캔버스에서 border가 끊기지 않고 연결된 부분이 있다면 해당 흰색 공간을 선택한 색상으로 채워지는 기능을 의미한다.</p>
+<p><code>getImageData()</code>를 통해 캔버스 내 픽셀 정보를 불러올 수 있다는 사실은 알았지만, 단순히 전체를 탐색해야 하는 것인가? 이건 아닐 것 같은데.. 라는 생각이 들었다. 이에 대한 구현 방법을 찾아보다가 <code>flood fill</code> 이라는 알고리즘을 보게 됐고, 해당 내용을 좀 더 공부해보고 캔버스에 적용해보려고 한다. 아이디어는 <a href="https://stackoverflow.com/questions/19073140/fill-a-portion-of-drawn-image-in-canvas" target="_blank">stackoverflow</a> 를 참고했다.</p>
+<h2 id="사전지식">사전지식<a class="anchorjs-link" href="#%ec%82%ac%ec%a0%84%ec%a7%80%ec%8b%9d"></a></h2><h3 id="getimagedata">getImageData()<a class="anchorjs-link" href="#getimagedata"></a></h3><p>우선 getImageData()가 어떤 값을 반환하는지 확인이 필요했고,</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>console.log(getImageData(<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, CANVAS_WIDTH, CANVAS_HEIGHT);
+</span></span></code></pre></div><p><figure>
+  <a class="paragraph-image">
+    <img data-src="https://user-images.githubusercontent.com/68578916/209682260-01f57dc0-9be1-4b8d-a2c0-e80f37587daf.png" data-action="zoom" alt="스크린샷 2022-11-21 오전 2 37 44"  class="lazyload">
+  </a>
+  
+</figure></p>
+<img src='https://user-images.githubusercontent.com/68578916/209682255-3817a02d-64ec-425f-b35c-fec29cdd6188.png' width="300"/>
+<p>음. 뭐가 좀 많음을 느껴 찾아봤다.
+먼저 해당 함수를 이해하기 위해서 캔버스 내 이미지 개념을 확인할 필요가 있었다.</p>
+<p>✏️ <code>getImageData(x, y, w, h)</code> : ImageData 객체를 리턴하며, data는 <code>래스터 정보</code>이다.
+래스터(Raster) : 이미지 내 픽셀 정보로, 래스트 정보는 <strong>한 점당 R, G, B, A 요소 각각에 대해 4바이트씩 값을 가지며</strong> 이런 픽셀 정보가 좌→우로, 위→아래로 나열된다. (<a href="http://www.soen.kr/html5/html3/3-2-2.htm" target="_blank">참조 링크</a>)</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img data-src="https://user-images.githubusercontent.com/68578916/209682252-2cff12bb-a89f-443e-b3c1-a18faec2e4f0.png" data-action="zoom" alt="Untitleㅇㄴd"  class="lazyload">
+  </a>
+  
+</figure></p>
+<p>즉, 우리가 보는 이미지는 2차원 배열이지만 <strong>ImageData의 정보는 1차원 배열로 얻게 되고</strong>, 일차원 배열의 길이는 <code>w * h * 4</code>임을 알 수 있었다.</p>
+<p>이 정보를 알고나니 위에서 CANVAS_WIDTH가 742이고, CANVAS_HEIGHT가 468였기 때문에 배열의 길이가 347,256이 되지 않을까 예상했지만 이보다 4배를 더한 1,389,024의 값이 어떻게 나오게 됐는지 알게 되었다.</p>
+<h3 id="flood-fill이란">flood fill이란?<a class="anchorjs-link" href="#flood-fill%ec%9d%b4%eb%9e%80"></a></h3><p>픽셀 데이터를 어떻게 얻는지를 확인했으니 이제 어떤 식으로 구현해야 좋을지를 봐야한다.</p>
+<p>플러드 필(flood fill)에 대한 정의는 다음과 같다. (<a href="https://ko.wikipedia.org/wiki/%ED%94%8C%EB%9F%AC%EB%93%9C_%ED%95%84" target="_blank">참조 링크-위키백과</a>)</p>
+<h4 id="정의">정의<a class="anchorjs-link" href="#%ec%a0%95%ec%9d%98"></a></h4><aside>
+❓ 플러드 필(flood fill) 혹은 시드 필(seed fill)은 다차원 배열의 어떤 칸과 연결된 영역을 찾는 알고리즘이다.
+[사용 영역]
+  - 그림 프로그램에서 연결된 비슷한 색을 가지는 영역에 “채우기” 도구에 사용
+  - 바둑이나 지뢰 찾기 같은 게임에서 어떤 비어 있는 칸을 표시할지 결정할 때 사용
+</aside>
+<h4 id="알고리즘">알고리즘<a class="anchorjs-link" href="#%ec%95%8c%ea%b3%a0%eb%a6%ac%ec%a6%98"></a></h4><aside>
+🥕 플러드 필 알고리즘은 시작 칸, 목표 색, 대체 색의 세 개의 인자를 받는다. 이 알고리즘은 배열에 있는 시작 칸에서 목표 색으로 연결된 모든 칸을 방문해서 대체 색으로 바꾼다. 플러드 필 알고리즘을 구현하는 방법은 여러가지가 있지만, 대부분 큐나 스택과 같은 자료구조를 사용한다. 모서리가 맞닿은 칸이 연결되어 있는 지에 따라서 두 가지 변형이 있다: 각각 4방향과 8방향이다.
+</aside>
+<p>이해하고 보니 dfs를 이용해 재귀함수로 구현하거나 bfs로 큐를 이용해 구현하는 방식인 것 같다. 이렇게 생각하니 그냥 백준 단지 채우기였나? 그 문제 풀던 것처럼 생각하면 좋을 것 같다. 오랜만에 그래프 알고리즘을 푼다니.. <del>설렌다</del>. 단, 조금 더 생각해 볼만한 조건들이 필요하다.</p>
+<h2 id="고민거리">고민거리<a class="anchorjs-link" href="#%ea%b3%a0%eb%af%bc%ea%b1%b0%eb%a6%ac"></a></h2><h3 id="1-imagedata를-2d-array로-바꿔서-푸는것"><del>1. ImageData를 2D Array로 바꿔서 푸는것?</del><a class="anchorjs-link" href="#1-imagedata%eb%a5%bc-2d-array%eb%a1%9c-%eb%b0%94%ea%bf%94%ec%84%9c-%ed%91%b8%eb%8a%94%ea%b2%83"></a></h3><p>ImageData의 data가 일차원 배열 형태인데 이를 이차원 배열로 바꿔서 풀면 dfs 알고리즘을 풀듯이 직관적으로 문제 풀이가 가능할 것 같다.</p>
+<p>⇒ 처음에 이런 방식을 이용해 구현했는데, 이차원 배열로 바꿨다가 다시 일차원 배열로 만드는 과정에서 오류가 있었고, 결국 1차원 배열을 그대로 사용하는 대신 <code>offset = (y * imageData.width + x) * 4</code>로 계산하여 필요한 픽셀 위치의 인덱스를 찾았다.</p>
+<h3 id="2-각-픽셀이-4칸rgba를-갖는-방식이-효율적인가"><del>2. 각 픽셀이 4칸(rgba)를 갖는 방식이 효율적인가?</del><a class="anchorjs-link" href="#2-%ea%b0%81-%ed%94%bd%ec%85%80%ec%9d%b4-4%ec%b9%b8rgba%eb%a5%bc-%ea%b0%96%eb%8a%94-%eb%b0%a9%ec%8b%9d%ec%9d%b4-%ed%9a%a8%ec%9c%a8%ec%a0%81%ec%9d%b8%ea%b0%80"></a></h3><p>한 픽셀이 하나의 값을 가지면 좋겠지만, 쭉 나열된 일차원 배열은 <strong>하나의 픽셀이 4칸의 정보를 가지고 있는 형태</strong>다. 그렇다면 1) 4칸씩 다시 하나의 배열로 묶어 이용하거나 2) 4칸의 정보를 rgba 값이 아닌 hex로 바꿔놓고 한 픽셀이 한 칸을 갖도록 하는 방식이 있을 것 같다.</p>
+<p>⇒ 마지막에 바꾼 imageData를 캔버스에 다시 얹는 과정(putImageData())이 필요해서 hex로 바꾸지 않는 편이 더 효율적이다.</p>
+<h2 id="구현">구현<a class="anchorjs-link" href="#%ea%b5%ac%ed%98%84"></a></h2><p><a href="https://stackoverflow.com/questions/2106995/how-can-i-perform-flood-fill-with-html-canvas" target="_blank">stackoverflow</a>를 참조했다.</p>
+<h3 id="1-캔버스에-클릭한-영역의-좌표와-선택된-색상을-구한다">1. 캔버스에 클릭한 영역의 좌표와 선택된 색상을 구한다.<a class="anchorjs-link" href="#1-%ec%ba%94%eb%b2%84%ec%8a%a4%ec%97%90-%ed%81%b4%eb%a6%ad%ed%95%9c-%ec%98%81%ec%97%ad%ec%9d%98-%ec%a2%8c%ed%91%9c%ec%99%80-%ec%84%a0%ed%83%9d%eb%90%9c-%ec%83%89%ec%83%81%ec%9d%84-%ea%b5%ac%ed%95%9c%eb%8b%a4"></a></h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#ff79c6">const</span> paintCanvas <span style="color:#ff79c6">=</span> useCallback(
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    (event: <span style="color:#8be9fd">MouseEvent</span>) <span style="color:#ff79c6">=&gt;</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>        <span style="color:#ff79c6">if</span> (drawState.current <span style="color:#ff79c6">===</span> CanvasState.PAINT) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>            <span style="color:#ff79c6">const</span> curPos <span style="color:#ff79c6">=</span> getCoordinates(event);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>            <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>curPos) <span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>            floodFill(curPos.x, curPos.y, curColor.current);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>    },
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>    [drawState],
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>);
+</span></span></code></pre></div><p>추가로 코드에서 선택된 색상이 hex로 다뤄지고 있었고, 색상을 imageData에 적용하기 위해서는 [r,g,b,a] 꼴로 변환하는 과정이 필요해 hex-to-rgba 라이브러리를 이용했다.</p>
+<h3 id="2-캔버스의-imagedata-객체의-data-값을-floodfill-시켜준다">2. 캔버스의 imageData 객체의 data 값을 floodfill 시켜준다.<a class="anchorjs-link" href="#2-%ec%ba%94%eb%b2%84%ec%8a%a4%ec%9d%98-imagedata-%ea%b0%9d%ec%b2%b4%ec%9d%98-data-%ea%b0%92%ec%9d%84-floodfill-%ec%8b%9c%ec%bc%9c%ec%a4%80%eb%8b%a4"></a></h3><p>먼저 <code>getImageData()</code>를 이용해 캔버스의 전체 이미지 데이터를 가져오고, 해당 객체의 data 속성을 우리는 floodfill 시켜줘야 한다. 이 과정을 처음에 간단하게 재귀호출을 이용해보았다가 역시 Maximum call stack… 에러를 마주했고, 다시 스택 기반의 iterative 방식으로 구현했다(Iterative stack flood fill).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#ff79c6">const</span> floodFill <span style="color:#ff79c6">=</span> (x: <span style="color:#8be9fd">number</span>, y: <span style="color:#8be9fd">number</span>, fillColor: <span style="color:#8be9fd">Uint8ClampedArray</span>) <span style="color:#ff79c6">=&gt;</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    <span style="color:#ff79c6">const</span> imageData <span style="color:#ff79c6">=</span> ctxRef.current.getImageData(<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, CANVAS_WIDTH, CANVAS_HEIGHT);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    <span style="color:#ff79c6">const</span> visited <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Uint8Array(imageData.width, imageData.height);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    <span style="color:#ff79c6">const</span> targetColor <span style="color:#ff79c6">=</span> getPixelColor(imageData, x, y);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>isSameColor(targetColor, fillColor)) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>        <span style="color:#6272a4">// (1)
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span><span style="color:#6272a4"></span>        <span style="color:#ff79c6">const</span> stack <span style="color:#ff79c6">=</span> [{ x, y }];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>        <span style="color:#ff79c6">while</span> (stack.length <span style="color:#ff79c6">&gt;</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>            <span style="color:#ff79c6">const</span> child <span style="color:#ff79c6">=</span> stack.pop();
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>            <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>child) <span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>            <span style="color:#ff79c6">const</span> currentColor <span style="color:#ff79c6">=</span> getPixelColor(imageData, child.x, child.y); <span style="color:#6272a4">// (2)
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span><span style="color:#6272a4"></span>            <span style="color:#ff79c6">if</span> (
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>                <span style="color:#ff79c6">!</span>visited[child.y <span style="color:#ff79c6">*</span> imageData.width <span style="color:#ff79c6">+</span> child.x] <span style="color:#ff79c6">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>                isSameColor(currentColor, targetColor) <span style="color:#6272a4">//  (3)
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span><span style="color:#6272a4"></span>            ) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>                setPixel(imageData, child.x, child.y, fillColor); <span style="color:#6272a4">// (4)
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span><span style="color:#6272a4"></span>                visited[child.y <span style="color:#ff79c6">*</span> imageData.width <span style="color:#ff79c6">+</span> child.x] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>                stack.push({ x: <span style="color:#8be9fd">child.x</span> <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>, y: <span style="color:#8be9fd">child.y</span> });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>                stack.push({ x: <span style="color:#8be9fd">child.x</span> <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span>, y: <span style="color:#8be9fd">child.y</span> });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>                stack.push({ x: <span style="color:#8be9fd">child.x</span>, y: <span style="color:#8be9fd">child.y</span> <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span> });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>                stack.push({ x: <span style="color:#8be9fd">child.x</span>, y: <span style="color:#8be9fd">child.y</span> <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span> });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>        ctxRef.current.putImageData(imageData, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>); <span style="color:#6272a4">// (5)
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span><span style="color:#6272a4"></span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span>};
+</span></span></code></pre></div><p>아래는 위 코드 내 주석에 대한 설명이다.</p>
+<p><strong><em>(1) targetColor와 fillColor가 달라야 하는 이유</em></strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>isSameColor(targetColor, fillColor)) { <span style="color:#6272a4">// (1)
+</span></span></span></code></pre></div><ul>
+<li><code>targetColor</code> : 클릭한 위치의 색상 (색칠될 시작점의 현재 색상)</li>
+<li><code>fillColor</code> : 팔레트에서 선택된 색상 (색칠하고자 하는 색상)</li>
+</ul>
+<p>이 부분은 없어도 되지만, 같은 색상으로 같은 위치를 여러번 선택하여 불필요하게 실행되는 부분에 대한 방지다. 이미 선택된 색상으로 칠해진 부분을 클릭한다면, floodfill이 실행되지 않아도 된다.</p>
+<p><strong><em>(2) currentColor</em></strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">const</span> currentColor <span style="color:#ff79c6">=</span> getPixelColor(imageData, child.x, child.y); <span style="color:#6272a4">// (2)
+</span></span></span></code></pre></div><ul>
+<li><code>currentColor</code> : 스택에서 pop() 시킨, 탐색하려는 픽셀의 색상</li>
+</ul>
+<p><strong><em>(3) targetColor와 currentColor가 같은지 비교하는 이유</em></strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">if</span> (isSameColor(currentColor, targetColor)) { <span style="color:#6272a4">// (3)
+</span></span></span></code></pre></div><p>현재 클릭한 위치의 색상과 같은 색을 가진 부분만을 fillColor로 채운다. 즉, 테두리에 둘러싸인 곳을 클릭한다면 테두리는 색상이 채워지지 않는다.</p>
+<p><strong><em>(4) 색상 칠하기</em></strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">export</span> <span style="color:#ff79c6">const</span> getPixelOffset <span style="color:#ff79c6">=</span> (imageData: <span style="color:#8be9fd">any</span>, x: <span style="color:#8be9fd">number</span>, y: <span style="color:#8be9fd">number</span>) <span style="color:#ff79c6">=&gt;</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    <span style="color:#ff79c6">return</span> (y <span style="color:#ff79c6">*</span> imageData.width <span style="color:#ff79c6">+</span> x) <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">4</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>};
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">const</span> setPixel <span style="color:#ff79c6">=</span> (imageData: <span style="color:#8be9fd">any</span>, x: <span style="color:#8be9fd">number</span>, y: <span style="color:#8be9fd">number</span>, color: <span style="color:#8be9fd">Uint8ClampedArray</span>) <span style="color:#ff79c6">=&gt;</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    <span style="color:#ff79c6">const</span> offset <span style="color:#ff79c6">=</span> getPixelOffset(imageData, x, y);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>    imageData.data[offset <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">=</span> color[<span style="color:#bd93f9">0</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>    imageData.data[offset <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">=</span> color[<span style="color:#bd93f9">1</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>    imageData.data[offset <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">2</span>] <span style="color:#ff79c6">=</span> color[<span style="color:#bd93f9">2</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>    imageData.data[offset <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">3</span>] <span style="color:#ff79c6">=</span> color[<span style="color:#bd93f9">3</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span>};
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9</span><span>setPixel(imageData, child.x, child.y, fillColor); <span style="color:#6272a4">// (4)
+</span></span></span></code></pre></div><p>이제 클릭한 위치 주변으로 색을 칠할 조건을 만족하는 픽셀에 색상을 입혀야 한다. imageData의 data 배열에 참조할 위치의 인덱스를 구해(<code>getPixelOffset()</code>) r, g, b, a 값을 선택된 fillColor로 입혀준다.</p>
+<p><strong><em>(5) 캔버스에 바뀐 이미지데이터를 띄우기</em></strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>ctxRef.current.putImageData(imageData, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>); <span style="color:#6272a4">// (5)
+</span></span></span></code></pre></div><p>getImageData()로 받아온 imageData의 data를 지금까지 수정했다. 이를 캔버스에 적용하기 위해서는 <code>putImageData()</code>를 이용할 수 있다.</p>
+<h2 id="issues">Issues<a class="anchorjs-link" href="#issues"></a></h2><h3 id="-특정-색이-안채워지는-문제">❓ 특정 색이 안채워지는 문제?<a class="anchorjs-link" href="#-%ed%8a%b9%ec%a0%95-%ec%83%89%ec%9d%b4-%ec%95%88%ec%b1%84%ec%9b%8c%ec%a7%80%eb%8a%94-%eb%ac%b8%ec%a0%9c"></a></h3><p>팔레트의 파란색, 노란색, 초록색 등이 안채워지는 문제가 있다. 그외의 팔레트 색상이나 hex 색상 선택기에서 고른 색들은 모두 적용이 잘 된다. 이거는 정말 원인을 모르겠었는데 관련 있을 문제를 찾았다.</p>
+<h5 id="같은-색상으로-선을-그리고-색을-칠했는데-칠할-때의-색상이-연하게-출력된다">❗ 같은 색상으로 선을 그리고 색을 칠했는데 칠할 때의 색상이 연하게 출력된다.<a class="anchorjs-link" href="#%ea%b0%99%ec%9d%80-%ec%83%89%ec%83%81%ec%9c%bc%eb%a1%9c-%ec%84%a0%ec%9d%84-%ea%b7%b8%eb%a6%ac%ea%b3%a0-%ec%83%89%ec%9d%84-%ec%b9%a0%ed%96%88%eb%8a%94%eb%8d%b0-%ec%b9%a0%ed%95%a0-%eb%95%8c%ec%9d%98-%ec%83%89%ec%83%81%ec%9d%b4-%ec%97%b0%ed%95%98%ea%b2%8c-%ec%b6%9c%eb%a0%a5%eb%90%9c%eb%8b%a4"></a></h5><p><figure>
+  <a class="paragraph-image">
+    <img data-src="https://user-images.githubusercontent.com/68578916/209683205-9f27a40c-3d7c-4e3d-80b7-52441d903abb.png" data-action="zoom" alt="스크린샷 2022-11-26 오후 2 03 34"  class="lazyload">
+  </a>
+  
+</figure></p>
+<p>분명 펜으로 그릴 때와 채우기의 색상을 같이 설정했는데 채우기 색상이 연하게 출력됨을 인지했고, 이것의 원인을 해결하면 모든 색상이 잘 채워질 것이라 생각됐다. 그러고보니 기존에 잘 채워진다고 생각했던 색상들도 연하게 칠해지고 있었다🤯</p>
+<p>그래서 rgba 값 중 투명도를 결정하는 알파 값이 문제인 것 같아 색칠하는 함수를 다시 보니 마지막 줄에 color[0]으로 써놨었다 ㅎㅎ 🤯🤯</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img data-src="https://user-images.githubusercontent.com/68578916/209683204-a9e54486-3f3a-4f90-9eac-f59495153ce0.png" data-action="zoom" alt="스크린샷 2022-11-26 오후 2 08 26"  class="lazyload">
+  </a>
+  
+</figure></p>
+<p><code>imageData.data[offset + 3] = color[3];</code> 로 수정해서 바로 고쳐질 줄 알았는데..</p>
+<p>이상하게 색상이 안채워지는 문제가 있었다. imageData.data에 값이 잘못 들어가는 문제는 아니었다. 이 오류를 해결하는데도 시간이 오래 걸렸는데 이것의 원인은 <strong>canvas의 ImageData의 data 타입이 Uint8ClampedArray</strong> 였기 때문이었다.</p>
+<p>📎 <code>ImageData.data</code>는 <code>Uint8ClampedArray</code>형식이며 1차원 배열로 RGBA순서로 정의된 이미지 데이터를 나타낸다. <strong>각 원소는 정수값으로 0에서 255사이의 값을 갖는다.</strong></p>
+<p>본래의 rgba 값 중 알파 값은 0~1의 범위를 가지며 0에 가까울 수록 투명하고 1에 가까울수록 원색을 띈다. 그런데 Uint8ClampedArray 타입에서는 이 알파값의 범위가 0~255로 확장되어 사용이 되고, 나는 hex-to-rgba 라이브러리를 써서 색상의 rgba값을 구했기 때문에 마지막 알파값이 0~1 수준으로 나타나는 것이었다. 그래서 결국 화면 상에는 보이지 않았다..😞  이런 문제가 있었다.</p>
+<p>그냥 255로 고정할까 했지만 color picker 안에 투명도를 설정할 수 있는 부분이 있어 0~1을 0~255 안의 숫자로 매핑해 주는 부분을 추가했다.</p>
+<img src="https://user-images.githubusercontent.com/68578916/209683197-2060aaad-0f00-4ccb-a1d7-d02bcc9658c4.png" width="200" />
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">export</span> <span style="color:#ff79c6">const</span> convertHexToRgba <span style="color:#ff79c6">=</span> (color: <span style="color:#8be9fd">string</span>) <span style="color:#ff79c6">=&gt;</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    ...
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>    rgba[<span style="color:#bd93f9">3</span>] <span style="color:#ff79c6">=</span> rgba[<span style="color:#bd93f9">3</span>] <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">255</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>    <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">new</span> Uint8ClampedArray(rgba);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>};
+</span></span></code></pre></div><p><figure>
+  <a class="paragraph-image">
+    <img data-src="https://user-images.githubusercontent.com/68578916/209683200-55fd27a2-7b7c-427b-9bea-0af78c933e70.png" data-action="zoom" alt="스크린샷 2022-11-27 오후 3 46 38"  class="lazyload">
+  </a>
+  
+</figure>
+이제 다 잘 채워진다 흑</p>
+<h2 id="전체-코드">전체 코드<a class="anchorjs-link" href="#%ec%a0%84%ec%b2%b4-%ec%bd%94%eb%93%9c"></a></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#ff79c6">import</span> hexToRgba <span style="color:#ff79c6">from</span> <span style="color:#f1fa8c">&#39;hex-to-rgba&#39;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#ff79c6">const</span> convertHexToRgba <span style="color:#ff79c6">=</span> (color: <span style="color:#8be9fd">string</span>) <span style="color:#ff79c6">=&gt;</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    <span style="color:#ff79c6">const</span> rgbaStr <span style="color:#ff79c6">=</span> hexToRgba(color);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>    <span style="color:#ff79c6">const</span> rgba <span style="color:#ff79c6">=</span> rgbaStr
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>        .substring(<span style="color:#bd93f9">5</span>, rgbaStr.length <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>        .split(<span style="color:#f1fa8c">&#39;,&#39;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>        .map((str: <span style="color:#8be9fd">string</span>) <span style="color:#ff79c6">=&gt;</span> <span style="color:#8be9fd;font-style:italic">Number</span>(str));
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>    rgba[<span style="color:#bd93f9">3</span>] <span style="color:#ff79c6">=</span> rgba[<span style="color:#bd93f9">3</span>] <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">255</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>    <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">new</span> Uint8ClampedArray(rgba);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>};
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span><span style="color:#ff79c6">const</span> isValidSquare <span style="color:#ff79c6">=</span> (imageData: <span style="color:#8be9fd">any</span>, x: <span style="color:#8be9fd">number</span>, y: <span style="color:#8be9fd">number</span>) <span style="color:#ff79c6">=&gt;</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>    <span style="color:#ff79c6">return</span> x <span style="color:#ff79c6">&gt;=</span> <span style="color:#bd93f9">0</span> <span style="color:#ff79c6">&amp;&amp;</span> x <span style="color:#ff79c6">&lt;</span> imageData.width <span style="color:#ff79c6">&amp;&amp;</span> y <span style="color:#ff79c6">&gt;=</span> <span style="color:#bd93f9">0</span> <span style="color:#ff79c6">&amp;&amp;</span> y <span style="color:#ff79c6">&lt;</span> imageData.height;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>};
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span><span style="color:#ff79c6">const</span> getPixelOffset <span style="color:#ff79c6">=</span> (imageData: <span style="color:#8be9fd">any</span>, x: <span style="color:#8be9fd">number</span>, y: <span style="color:#8be9fd">number</span>) <span style="color:#ff79c6">=&gt;</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>    <span style="color:#ff79c6">return</span> (y <span style="color:#ff79c6">*</span> imageData.width <span style="color:#ff79c6">+</span> x) <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">4</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>};
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span><span style="color:#ff79c6">const</span> getPixelColor <span style="color:#ff79c6">=</span> (imageData: <span style="color:#8be9fd">any</span>, x: <span style="color:#8be9fd">number</span>, y: <span style="color:#8be9fd">number</span>) <span style="color:#ff79c6">=&gt;</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>    <span style="color:#ff79c6">if</span> (isValidSquare(imageData, x, y)) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>        <span style="color:#ff79c6">const</span> offset <span style="color:#ff79c6">=</span> getPixelOffset(imageData, x, y);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>        <span style="color:#ff79c6">return</span> imageData.data.slice(offset, offset <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">4</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>    } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span>        <span style="color:#ff79c6">return</span> [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>]; <span style="color:#6272a4">// invalid color
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span><span style="color:#6272a4"></span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span>};
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30</span><span><span style="color:#ff79c6">const</span> isSameColor <span style="color:#ff79c6">=</span> (a: <span style="color:#8be9fd">Uint8ClampedArray</span>, b: <span style="color:#8be9fd">Uint8ClampedArray</span>) <span style="color:#ff79c6">=&gt;</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31</span><span>    <span style="color:#ff79c6">return</span> a[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">===</span> b[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">&amp;&amp;</span> a[<span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">===</span> b[<span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">&amp;&amp;</span> a[<span style="color:#bd93f9">2</span>] <span style="color:#ff79c6">===</span> b[<span style="color:#bd93f9">2</span>] <span style="color:#ff79c6">&amp;&amp;</span> a[<span style="color:#bd93f9">3</span>] <span style="color:#ff79c6">===</span> b[<span style="color:#bd93f9">3</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32</span><span>};
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34</span><span><span style="color:#ff79c6">const</span> setPixel <span style="color:#ff79c6">=</span> (imageData: <span style="color:#8be9fd">any</span>, x: <span style="color:#8be9fd">number</span>, y: <span style="color:#8be9fd">number</span>, color: <span style="color:#8be9fd">Uint8ClampedArray</span>) <span style="color:#ff79c6">=&gt;</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35</span><span>    <span style="color:#ff79c6">const</span> offset <span style="color:#ff79c6">=</span> (y <span style="color:#ff79c6">*</span> imageData.width <span style="color:#ff79c6">+</span> x) <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">4</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36</span><span>    imageData.data[offset <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">=</span> color[<span style="color:#bd93f9">0</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37</span><span>    imageData.data[offset <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">=</span> color[<span style="color:#bd93f9">1</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38</span><span>    imageData.data[offset <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">2</span>] <span style="color:#ff79c6">=</span> color[<span style="color:#bd93f9">2</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39</span><span>    imageData.data[offset <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">3</span>] <span style="color:#ff79c6">=</span> color[<span style="color:#bd93f9">3</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40</span><span>};
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42</span><span><span style="color:#ff79c6">const</span> floodFill <span style="color:#ff79c6">=</span> (x: <span style="color:#8be9fd">number</span>, y: <span style="color:#8be9fd">number</span>, fillColor: <span style="color:#8be9fd">Uint8ClampedArray</span>) <span style="color:#ff79c6">=&gt;</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43</span><span>    <span style="color:#ff79c6">const</span> imageData <span style="color:#ff79c6">=</span> ctxRef.current.getImageData(<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, CANVAS_WIDTH, CANVAS_HEIGHT);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44</span><span>    <span style="color:#ff79c6">const</span> visited <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Uint8Array(imageData.width, imageData.height);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45</span><span>    <span style="color:#ff79c6">const</span> targetColor <span style="color:#ff79c6">=</span> getPixelColor(imageData, x, y);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47</span><span>    <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>isSameColor(targetColor, fillColor)) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48</span><span>        <span style="color:#ff79c6">const</span> stack <span style="color:#ff79c6">=</span> [{ x, y }];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49</span><span>        <span style="color:#ff79c6">while</span> (stack.length <span style="color:#ff79c6">&gt;</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50</span><span>            <span style="color:#ff79c6">const</span> child <span style="color:#ff79c6">=</span> stack.pop();
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51</span><span>            <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>child) <span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52</span><span>            <span style="color:#ff79c6">const</span> currentColor <span style="color:#ff79c6">=</span> getPixelColor(imageData, child.x, child.y);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53</span><span>            <span style="color:#ff79c6">if</span> (
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54</span><span>                <span style="color:#ff79c6">!</span>visited[child.y <span style="color:#ff79c6">*</span> imageData.width <span style="color:#ff79c6">+</span> child.x] <span style="color:#ff79c6">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55</span><span>                isSameColor(currentColor, targetColor)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56</span><span>            ) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57</span><span>                setPixel(imageData, child.x, child.y, fillColor);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58</span><span>                visited[child.y <span style="color:#ff79c6">*</span> imageData.width <span style="color:#ff79c6">+</span> child.x] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59</span><span>                stack.push({ x: <span style="color:#8be9fd">child.x</span> <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>, y: <span style="color:#8be9fd">child.y</span> });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60</span><span>                stack.push({ x: <span style="color:#8be9fd">child.x</span> <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span>, y: <span style="color:#8be9fd">child.y</span> });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61</span><span>                stack.push({ x: <span style="color:#8be9fd">child.x</span>, y: <span style="color:#8be9fd">child.y</span> <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span> });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62</span><span>                stack.push({ x: <span style="color:#8be9fd">child.x</span>, y: <span style="color:#8be9fd">child.y</span> <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span> });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65</span><span>        ctxRef.current.putImageData(imageData, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67</span><span>};
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69</span><span><span style="color:#ff79c6">const</span> paintCanvas <span style="color:#ff79c6">=</span> useCallback(
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70</span><span>    (event: <span style="color:#8be9fd">MouseEvent</span>) <span style="color:#ff79c6">=&gt;</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71</span><span>        <span style="color:#ff79c6">if</span> (drawState.current <span style="color:#ff79c6">===</span> CanvasState.PAINT) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72</span><span>            <span style="color:#ff79c6">const</span> curPos <span style="color:#ff79c6">=</span> getCoordinates(event);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73</span><span>            <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>curPos) <span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74</span><span>            floodFill(curPos.x, curPos.y, curColor.current);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76</span><span>    },
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77</span><span>    [drawState],
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78</span><span>);
+</span></span></code></pre></div><h2 id="optimization"><strong>Optimization</strong><a class="anchorjs-link" href="#optimization"></a></h2><p>(추후 리팩토링 기간에 적용 예정..)</p>
+<p>여기까지 동작은 잘 되었으나 <a href="https://stackoverflow.com/questions/2106995/how-can-i-perform-flood-fill-with-html-canvas" target="_blank">stackoverflow</a> 에서 개선할 수 있는 방법을 소개하고 있어 추후에 이를 추가로 적용해보려고 한다.</p>
+<h2 id="reference">Reference<a class="anchorjs-link" href="#reference"></a></h2><p><a href="https://learnersbucket.com/examples/algorithms/flood-fill-algorithm-in-javascript/" target="_blank">Flood fill algorithm in javascript - LearnersBucket</a></p>
+<p><a href="https://codeheir.com/2022/08/21/comparing-flood-fill-algorithms-in-javascript/" target="_blank">Comparing Flood Fill Algorithms in JavaScript - Codeheir</a></p>
+<p><a href="https://stackoverflow.com/questions/2106995/how-can-i-perform-flood-fill-with-html-canvas" target="_blank">How can I perform flood fill with HTML Canvas?</a></p>
+
+
+        <hr style="visibility: hidden;" />
+        <ul class="pager">
+          
+          <li class="previous">
+            <a href="/post/articles/react-strictmode/" data-toggle="tooltip" data-placement="top" title="React.StrictMode 알아보기">
+              Previous<br>
+              <span>React.StrictMode 알아보기</span>
+            </a>
+          </li>
+          
+          
+        </ul>
+        <hr style="visibility: hidden;" />
+
+        
+        
+
+
+
+<div class="giscus" id="comments"></div>
+<script src="https://giscus.app/client.js" 
+  data-repo="HyewonKkang/HyewonKkang.github.io" 
+  data-repo-id="R_kgDOHuvyhw"
+  data-category="General"
+  data-category-id="DIC_kwDOHuvyh84CQjDo"
+  data-mapping="pathname"
+  data-strict="0" 
+  data-reactions-enabled="1" 
+  data-emit-metadata="0" 
+  data-input-position="top"
+  data-theme="light_tritanopia"
+  data-lang="en"
+  crossorigin="anonymous"
+  async>
+  </script>
+
+
+
+
+      </div>
+
+      
+      
+      
+      <div class="
+              col-lg-2 col-lg-offset-0
+              visible-lg-block
+              sidebar-container
+              catalog-container">
+        <div class="side-catalog">
+          <hr class="hidden-sm hidden-xs">
+          <h5>
+            <a class="catalog-toggle" href="#">CATALOG</a>
+          </h5>
+          <ul class="catalog-body"></ul>
+        </div>
+      </div>
+      
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              sidebar-container">
+
+        
+        
+        <section>
+  
+  
+  <hr class="hidden-sm hidden-xs">
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/javascript/">JavaScript</a>
+    
+    <a href="/tags/react/">React</a>
+    
+  </div>
+</section>
+
+        
+        
+
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        <ul class="list-inline text-center">
+
+<li>
+  <a href="https://github.com/HyewonKkang" target="_blank">
+    <span class="fa-stack fa-lg">
+      <i class="fa fa-circle fa-stack-2x"></i>
+      <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+    </span>
+  </a>
+</li>
+
+<li>
+  <a href="mailto:gpffps369@gmail.com">
+    <span class="fa-stack fa-lg">
+      <i class="fa fa-circle fa-stack-2x"></i>
+      <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+    </span>
+  </a>
+</li></ul>
+
+        <p class="copyright text-muted">
+          Copyright &copy; Tech Blog | Hyewon 2022  
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src=/js/simple-jekyll-search.min.js></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+<script type="text/javascript">
+  function generateCatalog(selector) {
+    _containerSelector = 'div.post-container'
+    
+    var P = $(_containerSelector), a, n, t, l, i, c;
+    a = P.find('h1,h2,h3,h4');
+    
+    $(selector).html('')
+    
+    a.each(function () {
+      n = $(this).prop('tagName').toLowerCase();
+      i = "#" + $(this).prop('id');
+      t = $(this).text();
+      c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+      l = $('<li class="' + n + '_nav"></li>').append(c);
+      $(selector).append(l);
+    });
+    return true;
+  }
+
+  generateCatalog(".catalog-body");
+
+  
+  $(".catalog-toggle").click((function (e) {
+    e.preventDefault();
+    $('.side-catalog').toggleClass("fold")
+  }))
+</script>
+
+
+<script type="text/javascript" src='/js/jquery.nav.min.ade6bde8f9fcc6a4b40852cb892e9f5912340ab8fe1305149d917fdd16fffd8d.js'></script>
+<script>
+   $(document).ready( function () {
+    $('.catalog-body').onePageNav({
+      currentClass: "active",
+      changeHash: !1,
+      easing: "swing",
+      filter: "",
+      scrollSpeed: 700,
+      scrollOffset: 0,
+      scrollThreshold: .2,
+      begin: null,
+      end: null,
+      scrollChange: null,
+      padding: 80
+    });
+  });
+</script>
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+
+</body>
+
+</html>
