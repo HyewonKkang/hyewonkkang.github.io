@@ -6,7 +6,16 @@
     <description>Recent content on Tech Blog | Hyewon</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 08 Jan 2023 00:42:45 +0900</lastBuildDate><atom:link href="https://HyewonKkang.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 13 Apr 2023 06:42:45 +0900</lastBuildDate><atom:link href="https://HyewonKkang.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[TIL] 러닝타입스크립트 - 1. 자바스크립트에서 타입스크립트로</title>
+      <link>https://HyewonKkang.github.io/post/articles/ts-learning-typescript-1/</link>
+      <pubDate>Thu, 13 Apr 2023 06:42:45 +0900</pubDate>
+      
+      <guid>https://HyewonKkang.github.io/post/articles/ts-learning-typescript-1/</guid>
+      <description>⚠️ 러닝 타입스크립트 책의 모든 내용을 담지 않으며 주관적인 기준으로 필요한 내용만 작성하고, 부족한 내용에 대해 추가 개념을 정리합니다. JavaScript vs TypeScript JavaScript 동적 타입 언어</description>
+    </item>
+    
     <item>
       <title>네이버 커넥트재단 부스트캠프 웹·모바일 7기 지원부터 수료까지의 후기 🐋</title>
       <link>https://HyewonKkang.github.io/post/reviews/boostcamp-review/</link>
