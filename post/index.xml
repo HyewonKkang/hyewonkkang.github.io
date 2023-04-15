@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Tech Blog | Hyewon</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 14 Apr 2023 06:42:45 +0900</lastBuildDate><atom:link href="https://HyewonKkang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 15 Apr 2023 06:42:45 +0900</lastBuildDate><atom:link href="https://HyewonKkang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[TIL] 러닝타입스크립트 - 3. 유니언과 리터럴</title>
+      <link>https://HyewonKkang.github.io/post/articles/ts-learning-typescript-3/</link>
+      <pubDate>Sat, 15 Apr 2023 06:42:45 +0900</pubDate>
+      
+      <guid>https://HyewonKkang.github.io/post/articles/ts-learning-typescript-3/</guid>
+      <description>⚠️ 러닝 타입스크립트 책의 모든 내용을 담지 않으며 주관적인 기준으로 필요한 내용만 작성하고, 부족한 내용에 대해 추가 개념을 정리합니다. 💡 타입스크립트가 변수</description>
+    </item>
+    
     <item>
       <title>[TIL] 러닝타입스크립트 - 2. 타입 시스템</title>
       <link>https://HyewonKkang.github.io/post/articles/ts-learning-typescript-2/</link>
