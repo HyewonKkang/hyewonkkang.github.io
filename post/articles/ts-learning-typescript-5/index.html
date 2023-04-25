@@ -8,21 +8,21 @@
 
   
     
-  <title>[TIL] 러닝타입스크립트 - 2. 타입 시스템 | Tech Blog | Hyewon</title>
+  <title>[TIL] 러닝타입스크립트 - 5. 함수 | Tech Blog | Hyewon</title>
   <meta name="author" content="Hyewon Kang">
-  <meta name="description" content="타입스크립트의 타입검사기는 어떻게 작동할까?">
+  <meta name="description" content="타입스크립트로 함수를 작성해보자.">
   <meta name="keywords" content="blog,developer,personal">
 
   <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="[TIL] 러닝타입스크립트 - 2. 타입 시스템"/>
-<meta name="twitter:description" content="타입스크립트의 타입검사기는 어떻게 작동할까?"/>
+<meta name="twitter:title" content="[TIL] 러닝타입스크립트 - 5. 함수"/>
+<meta name="twitter:description" content="타입스크립트로 함수를 작성해보자."/>
 
-  <meta property="og:title" content="[TIL] 러닝타입스크립트 - 2. 타입 시스템" />
-<meta property="og:description" content="타입스크립트의 타입검사기는 어떻게 작동할까?" />
+  <meta property="og:title" content="[TIL] 러닝타입스크립트 - 5. 함수" />
+<meta property="og:description" content="타입스크립트로 함수를 작성해보자." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://HyewonKkang.github.io/post/articles/ts-learning-typescript-2/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2023-04-14T06:42:45+09:00" />
-<meta property="article:modified_time" content="2023-04-14T06:42:45+09:00" />
+<meta property="og:url" content="https://HyewonKkang.github.io/post/articles/ts-learning-typescript-5/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-04-25T06:42:45+09:00" />
+<meta property="article:modified_time" content="2023-04-25T06:42:45+09:00" />
 
   <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
   
@@ -173,11 +173,11 @@
             <a class="tag" href="/tags/%EB%9F%AC%EB%8B%9D%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8/" title="러닝타입스크립트">러닝타입스크립트</a>
             
           </div>
-          <h1>[TIL] 러닝타입스크립트 - 2. 타입 시스템</h1>
+          <h1>[TIL] 러닝타입스크립트 - 5. 함수</h1>
           <h2 class="subheading"></h2>
           <span class="meta">
             Posted by  Hyewon Kang 
-            on Fri, Apr 14, 2023
+            on Tue, Apr 25, 2023
           </span>
         </div>
       </div>
@@ -202,95 +202,63 @@
 <blockquote>
 <p>⚠️ 러닝 타입스크립트 책의 모든 내용을 담지 않으며 주관적인 기준으로 필요한 내용만 작성하고, 부족한 내용에 대해 추가 개념을 정리합니다.</p>
 </blockquote>
-<h2 id="타입-시스템type-system">타입 시스템(type system)<a class="anchorjs-link" href="#%ed%83%80%ec%9e%85-%ec%8b%9c%ec%8a%a4%ed%85%9ctype-system"></a></h2><ul>
+<h2 id="반환-타입">반환 타입<a class="anchorjs-link" href="#%eb%b0%98%ed%99%98-%ed%83%80%ec%9e%85"></a></h2><ul>
 <li>
-<p><strong><code>타입 시스템</code></strong>: 프로그래밍 언어가 프로그램에서 가질 수 있는 타입을 이해하는 방법에 대한 규칙 집합</p>
-</li>
-<li>
-<p>타입스크립트의 타입 시스템 작동방식</p>
-<pre><code>1.  코드를 읽고 존재하는 모든 타입과 값을 이해한다.
-2.  각 값이 초기 선언에서 가질 수 있는 타입을 확인한다.
-3.  각 값이 추후 코드에서 어떻게 사용될 수 있는지 모든 방법을 확인한다.
-4.  값의 사용법이 타입과 일치하지 않으면 사용자에게 오류를 표시한다.
-</code></pre>
-</li>
-</ul>
-<h2 id="오류-종류">오류 종류<a class="anchorjs-link" href="#%ec%98%a4%eb%a5%98-%ec%a2%85%eb%a5%98"></a></h2><ul>
-<li><code>구문 오류</code> : <strong>타입스크립트가 자바스크립트로 변환되는 것을 차단한 경우</strong>
+<p>명시적 반환 타입 (p.105)</p>
 <ul>
-<li>구문 오류는 타입스크립트가 코드로 이해할 수 없는 잘못된 구문을 감지할 때 발생한다.</li>
+<li>
+<p>변수와 마찬가지로 타입 애너테이션을 사용해 함수의 반환 타입을 명시적으로 선언하지 않는 것이 좋다.</p>
+</li>
+<li>
+<p>그러나 명시적 반환 타입이 매우 유용한 경우가 있다.</p>
+  <aside>
+  💡 - 가능한 반환값이 많은 함수가 항상 동일한 타입의 값을 반환하도록 강제한다.
+  - 타입스크립트는 재귀 함수의 반환 타입을 통해 타입을 유추하는 것을 거부한다.
+  - 수백 개 이상의 타입스크립트 파일이 있는 매우 큰 프로젝트에서 타입스크립트 타입 검사 속도를 높일 수 있다.
+  </aside>
+</li>
 </ul>
 </li>
-<li><code>타입 오류</code> : <strong>타입 검사기에 따라 일치하지 않는 것이 감지된 경우</strong>
+<li>
+<p>void 반환 타입</p>
 <ul>
-<li>타입 오류는 타입스크립트의 타입 검사기가 프로그램의 타입에서 오류를 감지했을 때 발생한다.</li>
-<li>오류가 발생했다고 해서 타입스크립트 구문이 자바스크립트로 변환되는 것을 차단하지는 않는다.
-하지만 코드가 실행되면 무언가 충돌하거나 예기치 않게 작동할 수 있음을 나타낸다.</li>
-</ul>
+<li>
+<p>자바스크립트 함수는 실젯값이 반환되지 않으면 기본으로 모두 undefined를 반환하지만 void는 undefined와 동일하지 않다.</p>
+<p>→ void는 함수의 반환 타입이 무시된다는 것을 의미하고 undefined는 반환되는 리터럴 값이다.</p>
 </li>
 </ul>
-<h2 id="할당-가능성">할당 가능성<a class="anchorjs-link" href="#%ed%95%a0%eb%8b%b9-%ea%b0%80%eb%8a%a5%ec%84%b1"></a></h2><ul>
-<li><code>할당 가능성(assignability)</code>
+</li>
+<li>
+<p>never 반환 타입</p>
 <ul>
-<li>타입스크립트에서 함수 호출이나 변수에 값을 제공할 수 있는지 여부를 확인하는 것.
-즉, 전달된 값이 예상된 타입으로 할당 가능한지 여부를 확인한다.</li>
-</ul>
-</li>
-</ul>
-<h2 id="type-annotation">Type Annotation<a class="anchorjs-link" href="#type-annotation"></a></h2><ul>
 <li>
-<p>타입스크립트에서 제공하는 Type annotation 예시</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">let</span> roker: <span style="color:#8be9fd">string</span>;
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>roker <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;John Jett&#39;</span>;
-</span></span></code></pre></div></li>
-<li>
-<p>타입 애너테이션은 타입스크립트에만 존재하며 런타임 코드에 영향을 주지도 않고, 유효한 자바스크립트 구문도 아니다.</p>
+<p>never 반환 함수는 (의도적으로) 항상 오류를 발생시키거나 무한 루프를 실행하는 함수다.</p>
 </li>
 <li>
-<p>tsc 명령어를 실행해 JS로 컴파일하면, 해당 코드가 삭제된다.</p>
-</li>
-<li>
-<p>타입 애너테이션은 TS가 자체적으로 수집할 수 없는 정보를 TS에 제공할 수 있다.</p>
-</li>
-</ul>
-<h2 id="타입-형태">타입 형태<a class="anchorjs-link" href="#%ed%83%80%ec%9e%85-%ed%98%95%ed%83%9c"></a></h2><h4 id="모듈">모듈<a class="anchorjs-link" href="#%eb%aa%a8%eb%93%88"></a></h4><ul>
-<li>
-<p>모듈과 스크립트</p>
-<ul>
-<li>모듈 : export 또는 import가 있는 파일</li>
-<li>스크립트 : 모듈이 아닌 모든 파일</li>
-</ul>
-</li>
-<li>
-<p><code>export {}</code></p>
-<ul>
-<li>ECMA 스크립트 사양에 따라 export 또는 import 문 없이 파일을 모듈로 만들어야 한다면 파일의 아무 곳에나 export{};를 추가해 강제로 모듈이 되도록 만든다.</li>
-</ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#6272a4">// a.ts and b.ts
-</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#6272a4"></span><span style="color:#ff79c6">const</span> shared <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;Cher&#39;</span>;
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span><span style="color:#ff79c6">export</span> {};
+<p>함수가 절대 반환하지 않도록 의도하려면 명시적 <code>: never</code> 타입 애너테이션을 추가해 해당 함수를 호출한 후 모든 코드가 실행되지 않음을 나타낸다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">function</span> fail(message: <span style="color:#8be9fd">string</span>)<span style="color:#ff79c6">:</span> <span style="color:#8be9fd">never</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    <span style="color:#ff79c6">throw</span> <span style="color:#ff79c6">new</span> <span style="color:#8be9fd;font-style:italic">Error</span>(<span style="color:#f1fa8c">`Invariant failure: </span><span style="color:#f1fa8c">${</span>message<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">.`</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>}
 </span></span></code></pre></div></li>
 </ul>
+</li>
+</ul>
+<blockquote>
+<p>💡 void vs. never
+→ void는 아무것도 반환하지 않는 함수를 위한 것이고, never는 절대 반환하지 않는 함수를 위한 것이다.</p>
+</blockquote>
 
 
         <hr style="visibility: hidden;" />
         <ul class="pager">
           
           <li class="previous">
-            <a href="/post/articles/ts-learning-typescript-1/" data-toggle="tooltip" data-placement="top" title="[TIL] 러닝타입스크립트 - 1. 자바스크립트에서 타입스크립트로">
+            <a href="/post/articles/ts-learning-typescript-4/" data-toggle="tooltip" data-placement="top" title="[TIL] 러닝타입스크립트 - 4. 객체">
               Previous<br>
-              <span>[TIL] 러닝타입스크립트 - 1. 자바스크립트에서 타입스크립트로</span>
+              <span>[TIL] 러닝타입스크립트 - 4. 객체</span>
             </a>
           </li>
           
-          
-          <li class="next">
-            <a href="/post/articles/ts-learning-typescript-3/" data-toggle="tooltip" data-placement="top" title="[TIL] 러닝타입스크립트 - 3. 유니언과 리터럴">
-              Next<br>
-              <span>[TIL] 러닝타입스크립트 - 3. 유니언과 리터럴</span>
-            </a>
-          </li>
           
         </ul>
         <hr style="visibility: hidden;" />
