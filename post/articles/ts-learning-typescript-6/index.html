@@ -8,21 +8,21 @@
 
   
     
-  <title>[TIL] 러닝타입스크립트 - 5. 함수 | Tech Blog | Hyewon</title>
+  <title>[TIL] 러닝타입스크립트 - 6. 배열 | Tech Blog | Hyewon</title>
   <meta name="author" content="Hyewon Kang">
-  <meta name="description" content="타입스크립트로 함수를 작성해보자.">
+  <meta name="description" content="유연함을 가진 자바스크립트 배열에 대해 알아보자.">
   <meta name="keywords" content="blog,developer,personal">
 
   <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="[TIL] 러닝타입스크립트 - 5. 함수"/>
-<meta name="twitter:description" content="타입스크립트로 함수를 작성해보자."/>
+<meta name="twitter:title" content="[TIL] 러닝타입스크립트 - 6. 배열"/>
+<meta name="twitter:description" content="유연함을 가진 자바스크립트 배열에 대해 알아보자."/>
 
-  <meta property="og:title" content="[TIL] 러닝타입스크립트 - 5. 함수" />
-<meta property="og:description" content="타입스크립트로 함수를 작성해보자." />
+  <meta property="og:title" content="[TIL] 러닝타입스크립트 - 6. 배열" />
+<meta property="og:description" content="유연함을 가진 자바스크립트 배열에 대해 알아보자." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://HyewonKkang.github.io/post/articles/ts-learning-typescript-5/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2023-04-25T06:42:45+09:00" />
-<meta property="article:modified_time" content="2023-04-25T06:42:45+09:00" />
+<meta property="og:url" content="https://HyewonKkang.github.io/post/articles/ts-learning-typescript-6/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-04-28T06:42:45+09:00" />
+<meta property="article:modified_time" content="2023-04-28T06:42:45+09:00" />
 
   <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
   
@@ -173,11 +173,11 @@
             <a class="tag" href="/tags/%EB%9F%AC%EB%8B%9D%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8/" title="러닝타입스크립트">러닝타입스크립트</a>
             
           </div>
-          <h1>[TIL] 러닝타입스크립트 - 5. 함수</h1>
+          <h1>[TIL] 러닝타입스크립트 - 6. 배열</h1>
           <h2 class="subheading"></h2>
           <span class="meta">
             Posted by  Hyewon Kang 
-            on Tue, Apr 25, 2023
+            on Fri, Apr 28, 2023
           </span>
         </div>
       </div>
@@ -202,70 +202,59 @@
 <blockquote>
 <p>⚠️ 러닝 타입스크립트 책의 모든 내용을 담지 않으며 주관적인 기준으로 필요한 내용만 작성하고, 부족한 내용에 대해 추가 개념을 정리합니다.</p>
 </blockquote>
-<h2 id="반환-타입">반환 타입<a class="anchorjs-link" href="#%eb%b0%98%ed%99%98-%ed%83%80%ec%9e%85"></a></h2><ul>
+<h2 id="튜플">튜플<a class="anchorjs-link" href="#%ed%8a%9c%ed%94%8c"></a></h2><ul>
 <li>
-<p>명시적 반환 타입 (p.105)</p>
-<ul>
-<li>
-<p>변수와 마찬가지로 타입 애너테이션을 사용해 함수의 반환 타입을 명시적으로 선언하지 않는 것이 좋다.</p>
+<p>고정된 크기의 배열</p>
 </li>
 <li>
-<p>그러나 명시적 반환 타입이 매우 유용한 경우가 있다.</p>
-  <aside>
-  💡 - 가능한 반환값이 많은 함수가 항상 동일한 타입의 값을 반환하도록 강제한다.
-  - 타입스크립트는 재귀 함수의 반환 타입을 통해 타입을 유추하는 것을 거부한다.
-  - 수백 개 이상의 타입스크립트 파일이 있는 매우 큰 프로젝트에서 타입스크립트 타입 검사 속도를 높일 수 있다.
-  </aside>
-</li>
-</ul>
+<p>예) <code>let yearAndWarrior: [number, string];</code></p>
 </li>
 <li>
-<p>void 반환 타입</p>
-<ul>
-<li>
-<p>자바스크립트 함수는 실젯값이 반환되지 않으면 기본으로 모두 undefined를 반환하지만 void는 undefined와 동일하지 않다.</p>
-<p>→ void는 함수의 반환 타입이 무시된다는 것을 의미하고 undefined는 반환되는 리터럴 값이다.</p>
-</li>
-</ul>
+<p>가변 길이의 배열 타입은 튜플 타입에 할당할 수 없다. → TS는 생성된 배열을 튜플이 아닌 가변 길이의 배열로 취급</p>
 </li>
 <li>
-<p>never 반환 타입</p>
-<ul>
-<li>
-<p>never 반환 함수는 (의도적으로) 항상 오류를 발생시키거나 무한 루프를 실행하는 함수다.</p>
-</li>
-<li>
-<p>함수가 절대 반환하지 않도록 의도하려면 명시적 <code>: never</code> 타입 애너테이션을 추가해 해당 함수를 호출한 후 모든 코드가 실행되지 않음을 나타낸다.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">function</span> fail(message: <span style="color:#8be9fd">string</span>)<span style="color:#ff79c6">:</span> <span style="color:#8be9fd">never</span> {
-</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    <span style="color:#ff79c6">throw</span> <span style="color:#ff79c6">new</span> <span style="color:#8be9fd;font-style:italic">Error</span>(<span style="color:#f1fa8c">`Invariant failure: </span><span style="color:#f1fa8c">${</span>message<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">.`</span>);
+<p>나머지 매개변수로서의 튜플 (p.126)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">function</span> logPair(name: <span style="color:#8be9fd">string</span>, value: <span style="color:#8be9fd">number</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    console.log(<span style="color:#f1fa8c">`</span><span style="color:#f1fa8c">${</span>name<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c"> has </span><span style="color:#f1fa8c">${</span>value<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">`</span>);
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span><span style="color:#ff79c6">const</span> pairArray <span style="color:#ff79c6">=</span> [<span style="color:#f1fa8c">&#39;Amage&#39;</span>, <span style="color:#bd93f9">1</span>]; <span style="color:#6272a4">// 이 경우 타입은 (string | number)[] 가 된다.
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span><span style="color:#6272a4"></span>logPair(...pairArray); <span style="color:#6272a4">// Error: 확산 인수는 튜플 유형을 가지거나 나머지 매개 변수로 전달되어야 합니다.
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8</span><span><span style="color:#ff79c6">const</span> pariTupleCorrect<span style="color:#ff79c6">:</span> [<span style="color:#8be9fd">string</span>, <span style="color:#8be9fd">number</span>] <span style="color:#ff79c6">=</span> [<span style="color:#f1fa8c">&#39;Amage&#39;</span>, <span style="color:#bd93f9">1</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9</span><span>logPair(...pariTupleCorrect);
 </span></span></code></pre></div></li>
 </ul>
-</li>
+<h2 id="튜플-추론">튜플 추론<a class="anchorjs-link" href="#%ed%8a%9c%ed%94%8c-%ec%b6%94%eb%a1%a0"></a></h2><ol>
+<li>명시적 튜플 타입</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">function</span> firstCharAndSizeExplicit(input: <span style="color:#8be9fd">string</span>)<span style="color:#ff79c6">:</span> [<span style="color:#8be9fd">string</span>, <span style="color:#8be9fd">number</span>] {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    <span style="color:#ff79c6">return</span> [input[<span style="color:#bd93f9">0</span>], input.length];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>}
+</span></span></code></pre></div><ol start="2">
+<li>const 어서션</li>
+</ol>
+<ul>
+<li>as const 연산자 이용</li>
+<li>const 어서션은 타입스크립트에 타입을 유추할 때 읽기 전용(read-only)이 가능한 값 형식을 사용하도록 지시한다.</li>
 </ul>
-<blockquote>
-<p>💡 void vs. never
-→ void는 아무것도 반환하지 않는 함수를 위한 것이고, never는 절대 반환하지 않는 함수를 위한 것이다.</p>
-</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#6272a4">// 타입 : readonly [1157, &#34;Tomoe&#34;]
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#6272a4"></span><span style="color:#ff79c6">const</span> readonlyTuple <span style="color:#ff79c6">=</span> [<span style="color:#bd93f9">1157</span>, <span style="color:#f1fa8c">&#39;Tomoe&#39;</span>] <span style="color:#ff79c6">as</span> <span style="color:#ff79c6">const</span>;
+</span></span></code></pre></div><ul>
+<li>const 어서션은 유연한 크기의 배열을 고정된 크기의 튜플로 전환하는 것을 넘어서, 해당 튜플이 읽기 전용이고 값 수정이 예상되는 곳에서 사용할 수 없음을 나타낸다.</li>
+</ul>
 
 
         <hr style="visibility: hidden;" />
         <ul class="pager">
           
           <li class="previous">
-            <a href="/post/articles/ts-learning-typescript-4/" data-toggle="tooltip" data-placement="top" title="[TIL] 러닝타입스크립트 - 4. 객체">
+            <a href="/post/articles/ts-learning-typescript-5/" data-toggle="tooltip" data-placement="top" title="[TIL] 러닝타입스크립트 - 5. 함수">
               Previous<br>
-              <span>[TIL] 러닝타입스크립트 - 4. 객체</span>
+              <span>[TIL] 러닝타입스크립트 - 5. 함수</span>
             </a>
           </li>
           
-          
-          <li class="next">
-            <a href="/post/articles/ts-learning-typescript-6/" data-toggle="tooltip" data-placement="top" title="[TIL] 러닝타입스크립트 - 6. 배열">
-              Next<br>
-              <span>[TIL] 러닝타입스크립트 - 6. 배열</span>
-            </a>
-          </li>
           
         </ul>
         <hr style="visibility: hidden;" />
