@@ -6,7 +6,16 @@
     <description>Recent content in React on Tech Blog | Hyewon</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 08 May 2023 00:02:45 +0900</lastBuildDate><atom:link href="https://HyewonKkang.github.io/tags/react/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 11 May 2023 00:02:45 +0900</lastBuildDate><atom:link href="https://HyewonKkang.github.io/tags/react/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Vite &#43; React &#43; TypeScript 환경에 Storybook v7.0 도입하기 (2)</title>
+      <link>https://HyewonKkang.github.io/post/articles/react-vite-storybook-2/</link>
+      <pubDate>Thu, 11 May 2023 00:02:45 +0900</pubDate>
+      
+      <guid>https://HyewonKkang.github.io/post/articles/react-vite-storybook-2/</guid>
+      <description>개요스토리북의 기본 사용방법에 대해 Vite + React + TypeScript 환경에 Storybook v7.0 도입하기 (1) 에서 학습했다. 이번에는 Storybook을 더 잘 사용하기 위한 몇 가지 방법들을 활용해</description>
+    </item>
+    
     <item>
       <title>Vite &#43; React &#43; TypeScript 환경에 Storybook v7.0 도입하기 (1)</title>
       <link>https://HyewonKkang.github.io/post/articles/react-vite-storybook-1/</link>

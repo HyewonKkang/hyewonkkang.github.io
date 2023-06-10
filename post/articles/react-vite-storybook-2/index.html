@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+    
+  <title>Vite &#43; React &#43; TypeScript 환경에 Storybook v7.0 도입하기 (2) | Tech Blog | Hyewon</title>
+  <meta name="author" content="Hyewon Kang">
+  <meta name="description" content="Vite로 빌드된 React 환경에 Storybook 적용하기">
+  <meta name="keywords" content="blog,developer,personal">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Vite &#43; React &#43; TypeScript 환경에 Storybook v7.0 도입하기 (2)"/>
+<meta name="twitter:description" content="Vite로 빌드된 React 환경에 Storybook 적용하기"/>
+
+  <meta property="og:title" content="Vite &#43; React &#43; TypeScript 환경에 Storybook v7.0 도입하기 (2)" />
+<meta property="og:description" content="Vite로 빌드된 React 환경에 Storybook 적용하기" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://HyewonKkang.github.io/post/articles/react-vite-storybook-2/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-05-11T00:02:45+09:00" />
+<meta property="article:modified_time" content="2023-05-11T00:02:45+09:00" />
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
+  
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <link rel="stylesheet" href="/sass/main.css">
+
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+  <script src=/js/lazysizes.min.js></script>
+
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  
+
+</head>
+
+
+
+<body ontouchstart="">
+  
+  
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://HyewonKkang.github.io/">Tech Blog | Hyewon</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+          <li><a href="https://github.com/HyewonKkang/" title="Github">Github</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+<style type="text/css">
+  header.intro-header {
+    position: relative;
+    background-image: url('');
+  }
+</style>
+
+<header class="intro-header style-text">
+
+  <div class="header-mask"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <div class="tags">
+            
+            <a class="tag" href="/tags/react/" title="React">React</a>
+            
+            <a class="tag" href="/tags/storybook/" title="Storybook">Storybook</a>
+            
+          </div>
+          <h1>Vite &#43; React &#43; TypeScript 환경에 Storybook v7.0 도입하기 (2)</h1>
+          <h2 class="subheading"></h2>
+          <span class="meta">
+            Posted by  Hyewon Kang 
+            on Thu, May 11, 2023
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  
+
+
+<article>
+  <div class="container">
+    <div class="row">
+
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              post-container">
+        <p><figure>
+  <a class="paragraph-image">
+    <img data-src="https://user-images.githubusercontent.com/68578916/236763229-9f4f9d8c-49c8-4b88-9024-6c7b74cf6499.png" data-action="zoom" alt="image"  class="lazyload">
+  </a>
+  
+</figure></p>
+<h1 id="개요">개요<a class="anchorjs-link" href="#%ea%b0%9c%ec%9a%94"></a></h1><p>스토리북의 기본 사용방법에 대해 <a href="https://www.notion.so/Vite-React-TypeScript-Storybook-v7-0-1-a6a9d68398fd46f8955e22daebdd2214?pvs=21" target="_blank">Vite + React + TypeScript 환경에 Storybook v7.0 도입하기 (1)</a> 에서 학습했다. 이번에는 Storybook을 더 잘 사용하기 위한 몇 가지 방법들을 활용해보려고 한다.</p>
+<hr>
+<h1 id="1-code-panel-추가하기">1. Code panel 추가하기<a class="anchorjs-link" href="#1-code-panel-%ec%b6%94%ea%b0%80%ed%95%98%ea%b8%b0"></a></h1><p><figure>
+  <a class="paragraph-image">
+    <img data-src="https://github.com/HyewonKkang/HyewonKkang/assets/68578916/a8866175-b089-49a6-92e7-524fc589dc4e" data-action="zoom" alt="스크린샷 2023-04-17 오후 6 03 30"  class="lazyload">
+  </a>
+  
+</figure></p>
+<p>현재 기본적으로 <code>Controls</code>, <code>Actions</code>, <code>Interaction</code>, <code>Knobs</code> 패널이 존재한다. 여기에 컴포넌트의 코드를 바로 확인할 수 있도록 <code>Code</code> panel을 추가하려고 한다.</p>
+<p>간단하게 <code>@storybook/addon-storysource</code>를 설치하고, addons에 규칙을 추가해주면 된다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>yarn add <span style="color:#8be9fd;font-style:italic">@storybook</span><span style="color:#ff79c6">/</span>addon<span style="color:#ff79c6">-</span>storysource <span style="color:#ff79c6">--</span>dev
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#6272a4">// .storybook/main.js
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#ff79c6">module</span>.exports <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>  addons<span style="color:#ff79c6">:</span> [
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>    <span style="color:#f1fa8c">&#39;@storybook/addon-links&#39;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    <span style="color:#f1fa8c">&#39;@storybook/addon-essentials&#39;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    <span style="color:#f1fa8c">&#39;@storybook/addon-mdx-gfm&#39;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>    <span style="color:#f1fa8c">&#39;@storybook/addon-knobs&#39;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>    <span style="color:#ff79c6">**</span><span style="color:#f1fa8c">&#39;@storybook/addon-storysource&#39;</span>,<span style="color:#ff79c6">**</span> <span style="color:#6272a4">// 추가
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span><span style="color:#6272a4"></span>  ],
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>	...
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>};
+</span></span></code></pre></div><p>그러면 하단에 Code 패널이 생성된다.</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img data-src="https://github.com/HyewonKkang/HyewonKkang/assets/68578916/4a82d3a2-9be1-4d4c-9ba9-7bf3b5144362" data-action="zoom" alt="스크린샷 2023-04-17 오후 6 16 51"  class="lazyload">
+  </a>
+  
+</figure></p>
+<hr>
+<h1 id="2-디자인시스템-관련-페이지-작성하기">2. 디자인시스템 관련 페이지 작성하기<a class="anchorjs-link" href="#2-%eb%94%94%ec%9e%90%ec%9d%b8%ec%8b%9c%ec%8a%a4%ed%85%9c-%ea%b4%80%eb%a0%a8-%ed%8e%98%ec%9d%b4%ec%a7%80-%ec%9e%91%ec%84%b1%ed%95%98%ea%b8%b0"></a></h1><p>Storybook 자체가 프론트엔드 개발의 문서화를 지원한다. 그래서 컴포넌트 테스트용 목적 외에도 프로젝트를 소개하는 페이지를 추가하고자 한다.</p>
+<p>우선 완성된 결과물은 다음과 같다. 좌측에 GETTING STARTED와 COMPONENTS 그룹을 생성했고, 프로젝트에 대한 소개인 <code>Intro</code> 페이지, 프로젝트에서 사용되는 icons를 정의한 <code>Icons</code> 페이지, 컬러토큰을 정의한 <code>Palette</code> 페이지, 폰트 관련 서식을 정의한 <code>Typography</code> 페이지를 추가로 구성했다.</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img data-src="https://github.com/HyewonKkang/HyewonKkang/assets/68578916/0b6bad1b-f8f0-49e2-8099-8ddc83995e35" data-action="zoom" alt="스크린샷 2023-04-17 오후 6 19 28"  class="lazyload">
+  </a>
+  
+</figure></p>
+<h3 id="2-1-naming-components-and-hierarchy--grouping--sorting">2-1) Naming components and hierarchy + Grouping + Sorting<a class="anchorjs-link" href="#2-1-naming-components-and-hierarchy--grouping--sorting"></a></h3><img src="https://github.com/HyewonKkang/HyewonKkang/assets/68578916/68595fc1-b792-43ee-ac17-27035d631bb6" width="300" />
+<p>다음과 같이 파일을 그룹핑하는 방법부터 알아보자. <code>stories.(tsx|mdx)</code> 파일을 생성한 후, title에서 이를 설정할 수 있다.</p>
+<p>Button 컴포넌트를 예로 들면, 아래와 같이 title에 <code>/</code> separator를 이용하면 그룹끼리 묶일 수 있다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#6272a4">// src/components/Button/Button.stories.tsx
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#ff79c6">import</span> Button <span style="color:#ff79c6">from</span> <span style="color:#f1fa8c">&#39;./Button&#39;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span><span style="color:#ff79c6">export</span> <span style="color:#ff79c6">default</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>    title<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#39;Components/Button&#39;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span>    component: <span style="color:#8be9fd">Button</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8</span><span>};
+</span></span></code></pre></div><p>추가적으로, 정렬하는 방법에 대해 알아보자.</p>
+<p>좌측 메뉴의 순서는 기본적으로 추가된 페이지 순으로 정렬되는데, 이러한 규칙을 알파벳 오름차순으로 정렬시키려면, 다음과 같이 parameters options의 <code>storySort</code>를 이용한다.</p>
+<p>method에 ‘alphabetical’을 추가하면 알파벳 순서로 스토리가 정렬된다. 이밖에도, 특정 페이지를 맨 위나 맨 아래로 배치하고 싶은 경우가 있다면, <code>order</code> 규칙을 적용할 수 있다. 이는 사용자 임의로 순서를 결정짓는데, 아래와 같은 규칙을 통해 GETTING STARTED 그룹의 순서가 알파벳 규칙을 따르지 않는 것을 확인할 수 있다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#ff79c6">export</span> <span style="color:#ff79c6">default</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    parameters<span style="color:#ff79c6">:</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>        options<span style="color:#ff79c6">:</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>            storySort<span style="color:#ff79c6">:</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>                method<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#39;alphabetical&#39;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>                order<span style="color:#ff79c6">:</span> [
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>                    <span style="color:#f1fa8c">&#39;Getting Started&#39;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>                    [<span style="color:#f1fa8c">&#39;Intro&#39;</span>, <span style="color:#f1fa8c">&#39;Icons&#39;</span>, <span style="color:#f1fa8c">&#39;Palette&#39;</span>, <span style="color:#f1fa8c">&#39;Typography&#39;</span>],
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>                    <span style="color:#f1fa8c">&#39;Components&#39;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>                ],
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>            },
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>        },
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>    },
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>};
+</span></span></code></pre></div><h3 id="2-2-introduction-페이지-작성하기">2-2) Introduction 페이지 작성하기<a class="anchorjs-link" href="#2-2-introduction-%ed%8e%98%ec%9d%b4%ec%a7%80-%ec%9e%91%ec%84%b1%ed%95%98%ea%b8%b0"></a></h3><p>이제 본격적으로 각 페이지를 작성해보자.</p>
+<p><code>Getting Started</code> 하위 페이지 생성을 위해 <code>src/stories</code> 경로에 각 파일들을 작성했고, 컴포넌트를 정의하는 용도가 아닌 markdown 문서를 작성하기 위한 페이지이기 때문에 확장자는 mdx로 작성했다.</p>
+<p>다음 그림은 누가봐도 마크다운 문법으로 작성된 페이지다. Storybook에서 제공하는 API 가운데 <code>Meta</code> 를 이용해 title을 정의한다. 그리고 해당 페이지에 대한 내용은 다들 익숙한 md 문법으로 작성하면 된다!</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img data-src="https://github.com/HyewonKkang/HyewonKkang/assets/68578916/b5841efe-1f87-41b8-982a-0091f07a0049" data-action="zoom" alt="asdfa"  class="lazyload">
+  </a>
+  
+</figure></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span>// src/stories/intro.stories.mdx
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>import React from &#39;react&#39;;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>import { Meta } from &#39;@storybook/blocks&#39;;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>import IconButton from &#39;../components/IconButton&#39;;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>import { ThemeProvider } from &#39;styled-components&#39;;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>import { theme } from &#39;../styles/theme&#39;;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>&lt;<span style="color:#ff79c6">Meta</span> <span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;Getting Started/Intro&#39;</span> /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>&lt;<span style="color:#ff79c6">section</span> <span style="color:#50fa7b">style</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{{</span> <span style="color:#50fa7b">display:</span> &#39;<span style="color:#50fa7b">flex</span>&#39;, <span style="color:#50fa7b">flexDirection:</span> &#39;<span style="color:#50fa7b">column</span>&#39;, <span style="color:#50fa7b">justifyContent:</span> &#39;<span style="color:#50fa7b">center</span>&#39;, <span style="color:#50fa7b">alignItems:</span> &#39;<span style="color:#50fa7b">center</span>&#39;, <span style="color:#50fa7b">padding:</span> &#39;<span style="color:#50fa7b">10px</span>&#39; }}&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span><span style="font-weight:bold"># Classmate Design System
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span><span style="font-weight:bold"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span><span style="font-weight:bold">### Design foundations and components library
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span><span style="font-weight:bold"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>&lt;<span style="color:#ff79c6">div</span> <span style="color:#50fa7b">style</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{{</span> <span style="color:#50fa7b">padding:</span> &#39;<span style="color:#50fa7b">20px</span>&#39; }}&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>  &lt;<span style="color:#ff79c6">ThemeProvider</span> <span style="color:#50fa7b">theme</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{theme}</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>    &lt;<span style="color:#ff79c6">IconButton</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>      <span style="color:#50fa7b">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;github&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>      <span style="color:#50fa7b">onClick</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{()</span> =&gt; window.open(&#39;https://github.com/Dev-TeamOne/classmate-frontend&#39;, &#39;_blank&#39;)}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>    /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>  &lt;/<span style="color:#ff79c6">ThemeProvider</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>&lt;/<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span>&lt;/<span style="color:#ff79c6">section</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span><span style="font-weight:bold">## Getting Started
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span><span><span style="font-weight:bold"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30</span><span>Classmate는 실시간으로 강연자와 청중을 연결해주는 크라우드소싱 플랫폼입니다. 스토리북을 통해 UI에 사용되는 컴포넌트들을 테스트 해볼 수 있습니다.
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32</span><span><span style="font-weight:bold">### Install
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33</span><span><span style="font-weight:bold"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34</span><span>git clone https://github.com/Dev-TeamOne/classmate-frontend.git
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35</span><span>yarn &amp;&amp; yarn storybook
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37</span><span><span style="font-weight:bold">## References
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38</span><span><span style="font-weight:bold"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39</span><span>[<span style="color:#ff79c6">Github</span>](<span style="color:#50fa7b">https://github.com/Dev-TeamOne</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41</span><span>[<span style="color:#ff79c6">UI-Design</span>](<span style="color:#50fa7b">https://www.figma.com/file/MMPKJgUWaE5lbRxQzHDycJ/Classmate?node-id=73-1760&amp;t=3xpZO33ms2zuejzm-0</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43</span><span>[<span style="color:#ff79c6">Classmate-team-notion</span>](<span style="color:#50fa7b">https://shy-cannon-6ec.notion.site/Dev-TeamOne-76767fce51764a35abe0c562753e580c</span>)
+</span></span></code></pre></div><img width="231" alt="스크린샷 2023-04-17 오후 6 24 10" src="https://github.com/HyewonKkang/HyewonKkang/assets/68578916/d023e0fd-8953-4bc8-81b2-09f59192466a">
+<h3 id="2-3-icongallery-만들기">2-3) IconGallery 만들기<a class="anchorjs-link" href="#2-3-icongallery-%eb%a7%8c%eb%93%a4%ea%b8%b0"></a></h3><p>이 역시도 Storybook에서 기본 API를 제공한다. <a href="https://storybook.js.org/docs/react/api/doc-block-icongallery" target="_blank">IconGallery</a>를 통해 프로젝트에서 사용되는 아이콘들을 grid 형태로 진열시킨다. IconGallery의 children으로 IconItem들을 넣을 수 있다.</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img data-src="https://github.com/HyewonKkang/HyewonKkang/assets/68578916/2a8758d4-fce8-4de4-bb4b-82465077741f" data-action="zoom" alt="스크린샷 2023-04-17 오후 7 13 45"  class="lazyload">
+  </a>
+  
+</figure></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span>import React from &#39;react&#39;;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>import { Meta, IconGallery, IconItem } from &#39;@storybook/blocks&#39;;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>import Icon from &#39;../components/Icon&#39;;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>import { icons } from &#39;../components/Icon/utils&#39;;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>&lt;<span style="color:#ff79c6">Meta</span> <span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;Getting Started/Icons&#39;</span> /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span><span style="font-weight:bold"># IconGallery
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span><span style="font-weight:bold"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>&lt;<span style="color:#ff79c6">IconGallery</span> <span style="color:#50fa7b">style</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{{</span> <span style="color:#50fa7b">marginTop:</span> &#39;<span style="color:#50fa7b">50px</span>&#39; }}&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>{icons.map((key) =&gt; (
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>&lt;<span style="color:#ff79c6">IconItem</span> <span style="color:#50fa7b">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{key}</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>&lt;<span style="color:#ff79c6">Icon</span> <span style="color:#50fa7b">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{key}</span> /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>&lt;/<span style="color:#ff79c6">IconItem</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>))}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>&lt;/<span style="color:#ff79c6">IconGallery</span>&gt;
+</span></span></code></pre></div><h3 id="2-4-colorpalette-만들기">2-4) ColorPalette 만들기<a class="anchorjs-link" href="#2-4-colorpalette-%eb%a7%8c%eb%93%a4%ea%b8%b0"></a></h3><p><a href="https://storybook.js.org/docs/react/api/doc-block-colorpalette" target="_blank">ColorPalette</a>도 사용법이 간단하다. ColorPalette 컴포넌트의 children으로 나타내는 색상의 ColorItem을 작성하면된다.</p>
+<ul>
+<li>title : <code>string</code> 표시할 색상의 이름</li>
+<li>subtitle : <code>string</code> 색상에 대한 추가설명</li>
+<li>colors : <code>string[] | { [key: string]: string }</code> 표시할 색상 목록 (key:value 형태)</li>
+</ul>
+<p>예시의 grey와 같이 여러 색상으로 분리하려면 color에 순서대로 key:value를 추가해주면 된다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>&lt;<span style="color:#ff79c6">ColorItem</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;grey&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#50fa7b">subtitle</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;greyscale&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span><span style="color:#50fa7b">colors</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{{</span> <span style="color:#50fa7b">Grey1:</span> &#39;#<span style="color:#50fa7b">888888</span>&#39;, <span style="color:#50fa7b">Grey2:</span> &#39;#<span style="color:#50fa7b">BBBBBB</span>&#39;, <span style="color:#50fa7b">Grey3:</span> &#39;#<span style="color:#50fa7b">D7D7D7</span>&#39; }}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>/&gt;
+</span></span></code></pre></div><p><figure>
+  <a class="paragraph-image">
+    <img data-src="https://github.com/HyewonKkang/HyewonKkang/assets/68578916/6c729368-4104-4209-b1a5-edfa27a25398" data-action="zoom" alt="sada"  class="lazyload">
+  </a>
+  
+</figure></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span>// stories/colors.stories.mdx
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>import { Meta, ColorPalette, ColorItem } from &#39;@storybook/blocks&#39;;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>import { colors } from &#39;../styles/theme&#39;;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>&lt;<span style="color:#ff79c6">Meta</span> <span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;Getting Started/Palette&#39;</span> /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span><span style="font-weight:bold"># Colors
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span><span style="font-weight:bold"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>&lt;<span style="color:#ff79c6">ColorPalette</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>  &lt;<span style="color:#ff79c6">ColorItem</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>    <span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;primary1&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>    <span style="color:#50fa7b">subtitle</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;서비스의 메인컬러로 사용&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>    <span style="color:#50fa7b">colors</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{{</span> <span style="color:#50fa7b">Primary1:</span> &#39;#<span style="color:#50fa7b">4B9BFA</span>&#39; }}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>  /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>  &lt;<span style="color:#ff79c6">ColorItem</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>    <span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;primary2&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>    <span style="color:#50fa7b">subtitle</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;서비스의 보조컬러로 사용&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>    <span style="color:#50fa7b">colors</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{{</span> <span style="color:#50fa7b">Primary2:</span> &#39;#<span style="color:#50fa7b">BFDBFD</span>&#39; }}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>  /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>  &lt;<span style="color:#ff79c6">ColorItem</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>    <span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;primary3&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>    <span style="color:#50fa7b">subtitle</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;서비스의 보조컬러로 사용&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>    <span style="color:#50fa7b">colors</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{{</span> <span style="color:#50fa7b">Primary3:</span> &#39;#<span style="color:#50fa7b">005DCC</span>&#39; }}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>  /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span>  &lt;<span style="color:#ff79c6">ColorItem</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span>    <span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;primary4&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span>    <span style="color:#50fa7b">subtitle</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;서비스의 보조컬러로 사용&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span><span>    <span style="color:#50fa7b">colors</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{{</span> <span style="color:#50fa7b">Primary4:</span> &#39;#<span style="color:#50fa7b">F1FAFF</span>&#39; }}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30</span><span>  /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31</span><span>  &lt;<span style="color:#ff79c6">ColorItem</span> <span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;red&#39;</span> <span style="color:#50fa7b">subtitle</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;오류 및 삭제 등에 사용&#39;</span> <span style="color:#50fa7b">colors</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{{</span> <span style="color:#50fa7b">Error:</span> &#39;#<span style="color:#50fa7b">F45452</span>&#39; }} /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32</span><span>  &lt;<span style="color:#ff79c6">ColorItem</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33</span><span>    <span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;titleActive&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34</span><span>    <span style="color:#50fa7b">subtitle</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;서비스의 보조컬러로 사용&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35</span><span>    <span style="color:#50fa7b">colors</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{{</span> <span style="color:#50fa7b">TitleActive:</span> &#39;#<span style="color:#50fa7b">000000</span>&#39; }}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36</span><span>  /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37</span><span>  &lt;<span style="color:#ff79c6">ColorItem</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38</span><span>    <span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;grey&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39</span><span>    <span style="color:#50fa7b">subtitle</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;greyscale&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40</span><span>    <span style="color:#50fa7b">colors</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{{</span> <span style="color:#50fa7b">Grey1:</span> &#39;#<span style="color:#50fa7b">888888</span>&#39;, <span style="color:#50fa7b">Grey2:</span> &#39;#<span style="color:#50fa7b">BBBBBB</span>&#39;, <span style="color:#50fa7b">Grey3:</span> &#39;#<span style="color:#50fa7b">D7D7D7</span>&#39; }}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41</span><span>  /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42</span><span>  &lt;<span style="color:#ff79c6">ColorItem</span> <span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;offWhite&#39;</span> <span style="color:#50fa7b">subtitle</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;서브 배경색으로 사용&#39;</span> <span style="color:#50fa7b">colors</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{{</span> <span style="color:#50fa7b">OffWhite:</span> &#39;#<span style="color:#50fa7b">F6F6F6</span>&#39; }} /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43</span><span>  &lt;<span style="color:#ff79c6">ColorItem</span> <span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;White&#39;</span> <span style="color:#50fa7b">subtitle</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;컴포넌트의 배경색으로 사용&#39;</span> <span style="color:#50fa7b">colors</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{{</span> <span style="color:#50fa7b">white:</span> &#39;#<span style="color:#50fa7b">FFFFFF</span>&#39; }} /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44</span><span>  &lt;<span style="color:#ff79c6">ColorItem</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45</span><span>    <span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;background&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46</span><span>    <span style="color:#50fa7b">subtitle</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;서비스의 배경색으로 사용&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47</span><span>    <span style="color:#50fa7b">colors</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{{</span> <span style="color:#50fa7b">Background:</span> &#39;#<span style="color:#50fa7b">F9F9F9</span>&#39; }}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48</span><span>  /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49</span><span>&lt;/<span style="color:#ff79c6">ColorPalette</span>&gt;
+</span></span></code></pre></div><h3 id="2-5-typeset-만들기">2-5) Typeset 만들기<a class="anchorjs-link" href="#2-5-typeset-%eb%a7%8c%eb%93%a4%ea%b8%b0"></a></h3><p><a href="https://storybook.js.org/docs/react/api/doc-block-typeset" target="_blank">Typeset</a> block은 프로젝트에서 쓰이는 폰트를 나타내는 목적의 문서다. Typeset 컴포넌트의 props로 fontSizes 배열과 fontWeight, fontFamily 를 적용할 수 있으며, 예시 문구는 sampleText로 전달한다.</p>
+<ul>
+<li>fontSizes</li>
+</ul>
+<p><figure>
+  <a class="paragraph-image">
+    <img data-src="https://github.com/HyewonKkang/HyewonKkang/assets/68578916/2046037c-5126-4fba-b1ce-7e6423114154" data-action="zoom" alt="스크린샷 2023-04-17 오후 6 20 06"  class="lazyload">
+  </a>
+  
+</figure></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span>import React from &#39;react&#39;;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>import { Meta, Typeset } from &#39;@storybook/blocks&#39;;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>import { theme } from &#39;../styles/theme&#39;;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>&lt;<span style="color:#ff79c6">Meta</span> <span style="color:#50fa7b">title</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;Getting Started/Typography&#39;</span> /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span><span style="font-weight:bold"># Base Typography
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span><span style="font-weight:bold"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>**Font:** Noto Sans KR
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>**Weights:** 400(light), 500(text), 700(bold, title)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>&lt;<span style="color:#ff79c6">Typeset</span> <span style="color:#50fa7b">fontSizes</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{[12,</span> <span style="color:#50fa7b">14</span>, <span style="color:#50fa7b">16</span>, <span style="color:#50fa7b">18</span>, <span style="color:#50fa7b">28</span>, <span style="color:#50fa7b">32</span>]} <span style="color:#50fa7b">fontWeight</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{400}</span> <span style="color:#50fa7b">sampleText</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;Was he a beast if music could move him so?&#39;</span> /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>&lt;<span style="color:#ff79c6">Typeset</span> <span style="color:#50fa7b">fontSizes</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{[12,</span> <span style="color:#50fa7b">14</span>, <span style="color:#50fa7b">16</span>, <span style="color:#50fa7b">18</span>, <span style="color:#50fa7b">28</span>, <span style="color:#50fa7b">32</span>]} <span style="color:#50fa7b">fontWeight</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{500}</span> /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>&lt;<span style="color:#ff79c6">Typeset</span> <span style="color:#50fa7b">fontSizes</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{[12,</span> <span style="color:#50fa7b">14</span>, <span style="color:#50fa7b">16</span>, <span style="color:#50fa7b">18</span>, <span style="color:#50fa7b">28</span>, <span style="color:#50fa7b">32</span>]} <span style="color:#50fa7b">fontWeight</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">{700}</span> /&gt;
+</span></span></code></pre></div><hr>
+<p>이외에도 Storybook은 다양한 API를 지원한다. 조금 더 문서를 잘 작성하고 싶다면 <a href="https://storybook.js.org/docs/react/api/doc-block-icongallery" target="_blank">storybook-docs-api</a> 문서를 보면서 추가해보는 것을 추천한다.</p>
+<hr>
+<h1 id="reference">Reference<a class="anchorjs-link" href="#reference"></a></h1><p><a href="https://storybook.js.org/addons/@storybook/addon-storysource" target="_blank">https://storybook.js.org/addons/@storybook/addon-storysource</a></p>
+
+
+        <hr style="visibility: hidden;" />
+        <ul class="pager">
+          
+          <li class="previous">
+            <a href="/post/articles/react-vite-storybook-1/" data-toggle="tooltip" data-placement="top" title="Vite &#43; React &#43; TypeScript 환경에 Storybook v7.0 도입하기 (1)">
+              Previous<br>
+              <span>Vite &#43; React &#43; TypeScript 환경에 Storybook v7.0 도입하기 (1)</span>
+            </a>
+          </li>
+          
+          
+        </ul>
+        <hr style="visibility: hidden;" />
+
+        
+        
+
+
+
+<div class="giscus" id="comments"></div>
+<script src="https://giscus.app/client.js" 
+  data-repo="HyewonKkang/HyewonKkang.github.io" 
+  data-repo-id="R_kgDOHuvyhw"
+  data-category="General"
+  data-category-id="DIC_kwDOHuvyh84CQjDo"
+  data-mapping="pathname"
+  data-strict="0" 
+  data-reactions-enabled="1" 
+  data-emit-metadata="0" 
+  data-input-position="top"
+  data-theme="light_tritanopia"
+  data-lang="en"
+  crossorigin="anonymous"
+  async>
+  </script>
+
+
+
+
+      </div>
+
+      
+      
+      
+      <div class="
+              col-lg-2 col-lg-offset-0
+              visible-lg-block
+              sidebar-container
+              catalog-container">
+        <div class="side-catalog">
+          <hr class="hidden-sm hidden-xs">
+          <h5>
+            <a class="catalog-toggle" href="#">CATALOG</a>
+          </h5>
+          <ul class="catalog-body"></ul>
+        </div>
+      </div>
+      
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              sidebar-container">
+
+        
+        
+        <section>
+  
+  
+  <hr class="hidden-sm hidden-xs">
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/boostcamp/">boostcamp</a>
+    
+    <a href="/tags/javascript/">JavaScript</a>
+    
+    <a href="/tags/react/">React</a>
+    
+    <a href="/tags/review/">Review</a>
+    
+    <a href="/tags/storybook/">Storybook</a>
+    
+  </div>
+</section>
+
+        
+        
+
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        <ul class="list-inline text-center">
+
+<li>
+  <a href="https://github.com/HyewonKkang" target="_blank">
+    <span class="fa-stack fa-lg">
+      <i class="fa fa-circle fa-stack-2x"></i>
+      <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+    </span>
+  </a>
+</li>
+
+<li>
+  <a href="mailto:gpffps369@gmail.com">
+    <span class="fa-stack fa-lg">
+      <i class="fa fa-circle fa-stack-2x"></i>
+      <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+    </span>
+  </a>
+</li></ul>
+
+        <p class="copyright text-muted">
+          Copyright &copy; Tech Blog | Hyewon 2023  
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src=/js/simple-jekyll-search.min.js></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+<script type="text/javascript">
+  function generateCatalog(selector) {
+    _containerSelector = 'div.post-container'
+    
+    var P = $(_containerSelector), a, n, t, l, i, c;
+    a = P.find('h1,h2,h3,h4');
+    
+    $(selector).html('')
+    
+    a.each(function () {
+      n = $(this).prop('tagName').toLowerCase();
+      i = "#" + $(this).prop('id');
+      t = $(this).text();
+      c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+      l = $('<li class="' + n + '_nav"></li>').append(c);
+      $(selector).append(l);
+    });
+    return true;
+  }
+
+  generateCatalog(".catalog-body");
+
+  
+  $(".catalog-toggle").click((function (e) {
+    e.preventDefault();
+    $('.side-catalog').toggleClass("fold")
+  }))
+</script>
+
+
+<script type="text/javascript" src='/js/jquery.nav.min.ade6bde8f9fcc6a4b40852cb892e9f5912340ab8fe1305149d917fdd16fffd8d.js'></script>
+<script>
+   $(document).ready( function () {
+    $('.catalog-body').onePageNav({
+      currentClass: "active",
+      changeHash: !1,
+      easing: "swing",
+      filter: "",
+      scrollSpeed: 700,
+      scrollOffset: 0,
+      scrollThreshold: .2,
+      begin: null,
+      end: null,
+      scrollChange: null,
+      padding: 80
+    });
+  });
+</script>
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+
+</body>
+
+</html>
