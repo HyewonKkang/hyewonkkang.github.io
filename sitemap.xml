@@ -83,5 +83,13 @@
     <loc>https://HyewonKkang.github.io/series/</loc>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
+  </url><url>
+    <loc>https://HyewonKkang.github.io/blog-banner-generator/</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://HyewonKkang.github.io/random-interview-defense/</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
   </url>
 </urlset>
