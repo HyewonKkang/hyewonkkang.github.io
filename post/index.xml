@@ -6,50 +6,14 @@
     <description>Recent content in Posts on Tech Blog | Hyewon</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 11 May 2023 00:02:45 +0900</lastBuildDate><atom:link href="https://HyewonKkang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 08 Jan 2023 00:42:45 +0900</lastBuildDate><atom:link href="https://HyewonKkang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Vite &#43; React &#43; TypeScript 환경에 Storybook v7.0 도입하기 (2)</title>
-      <link>https://HyewonKkang.github.io/post/articles/react-vite-storybook-2/</link>
-      <pubDate>Thu, 11 May 2023 00:02:45 +0900</pubDate>
-      
-      <guid>https://HyewonKkang.github.io/post/articles/react-vite-storybook-2/</guid>
-      <description>개요스토리북의 기본 사용방법에 대해 Vite + React + TypeScript 환경에 Storybook v7.0 도입하기 (1) 에서 학습했다. 이번에는 Storybook을 더 잘 사용하기 위한 몇 가지 방법들을 활용해</description>
-    </item>
-    
-    <item>
-      <title>Vite &#43; React &#43; TypeScript 환경에 Storybook v7.0 도입하기 (1)</title>
-      <link>https://HyewonKkang.github.io/post/articles/react-vite-storybook-1/</link>
-      <pubDate>Mon, 08 May 2023 00:02:45 +0900</pubDate>
-      
-      <guid>https://HyewonKkang.github.io/post/articles/react-vite-storybook-1/</guid>
-      <description>개요스토리북을 이용하면 리액트로 생성한 컴포넌트의 테스트 및 문서화를 간소화 시켜주는 효과를 얻는다. 정해진 스타일 가이드가 있다면, 디자인팀과의 협업에서 스</description>
-    </item>
-    
-    <item>
-      <title>네이버 커넥트재단 부스트캠프 웹·모바일 7기 지원부터 수료까지의 후기 🐋</title>
-      <link>https://HyewonKkang.github.io/post/reviews/boostcamp-review/</link>
+      <title>블로그 이전</title>
+      <link>https://HyewonKkang.github.io/post/reviews/move-blog/</link>
       <pubDate>Sun, 08 Jan 2023 00:42:45 +0900</pubDate>
       
-      <guid>https://HyewonKkang.github.io/post/reviews/boostcamp-review/</guid>
-      <description>2022년에 하반기에 진행된 부스트캠프 웹·모바일 7기 웹풀스택 과정을 무사히 수료했다. 7월 18일부터 12월 16일까지 진행됐던 5개월 간의 긴 여정을 끝내</description>
-    </item>
-    
-    <item>
-      <title>Canvas API로 채우기 기능 구현하기</title>
-      <link>https://HyewonKkang.github.io/post/articles/react-painting-canvas/</link>
-      <pubDate>Mon, 26 Dec 2022 06:42:45 +0900</pubDate>
-      
-      <guid>https://HyewonKkang.github.io/post/articles/react-painting-canvas/</guid>
-      <description>현재 텔레스트레이션 게임 구현을 위해 리액트에서 canvas를 이용해 그림판을 구현 중에 있다. 그림판의 기능으로는 선 그리기, 지우기, 채우기, 초기화, 색상</description>
-    </item>
-    
-    <item>
-      <title>React.StrictMode 알아보기</title>
-      <link>https://HyewonKkang.github.io/post/articles/react-strictmode/</link>
-      <pubDate>Fri, 23 Dec 2022 06:42:45 +0900</pubDate>
-      
-      <guid>https://HyewonKkang.github.io/post/articles/react-strictmode/</guid>
-      <description>프로젝트를 진행하다가 API 요청이 두번씩 간다던가, socket emit이 두 번 보내지는 경우를 겪은 적이 많다. console.log()가 두 번씩 찍히는 경험도 많다.</description>
+      <guid>https://HyewonKkang.github.io/post/reviews/move-blog/</guid>
+      <description>블로그 이전하였습니다. https://velog.io/@hyewon_kkang</description>
     </item>
     
   </channel>

@@ -2,42 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://HyewonKkang.github.io/post/</loc>
-    <lastmod>2023-05-11T00:02:45+09:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://HyewonKkang.github.io/tags/react/</loc>
-    <lastmod>2023-05-11T00:02:45+09:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://HyewonKkang.github.io/tags/storybook/</loc>
-    <lastmod>2023-05-11T00:02:45+09:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://HyewonKkang.github.io/tags/</loc>
-    <lastmod>2023-05-11T00:02:45+09:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://HyewonKkang.github.io/</loc>
-    <lastmod>2023-05-11T00:02:45+09:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://HyewonKkang.github.io/post/articles/react-vite-storybook-2/</loc>
-    <lastmod>2023-05-11T00:02:45+09:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://HyewonKkang.github.io/post/articles/react-vite-storybook-1/</loc>
-    <lastmod>2023-05-08T00:02:45+09:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url><url>
     <loc>https://HyewonKkang.github.io/tags/boostcamp/</loc>
+    <lastmod>2023-01-08T00:42:45+09:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://HyewonKkang.github.io/post/</loc>
     <lastmod>2023-01-08T00:42:45+09:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
@@ -47,28 +17,23 @@
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url><url>
-    <loc>https://HyewonKkang.github.io/post/reviews/boostcamp-review/</loc>
+    <loc>https://HyewonKkang.github.io/tags/</loc>
+    <lastmod>2023-01-08T00:42:45+09:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://HyewonKkang.github.io/</loc>
+    <lastmod>2023-01-08T00:42:45+09:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://HyewonKkang.github.io/post/reviews/move-blog/</loc>
     <lastmod>2023-01-08T00:42:45+09:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url><url>
     <loc>https://HyewonKkang.github.io/about/</loc>
     <lastmod>2022-12-26T00:00:00+00:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://HyewonKkang.github.io/post/articles/react-painting-canvas/</loc>
-    <lastmod>2022-12-26T06:42:45+09:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://HyewonKkang.github.io/tags/javascript/</loc>
-    <lastmod>2022-12-26T06:42:45+09:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://HyewonKkang.github.io/post/articles/react-strictmode/</loc>
-    <lastmod>2022-12-23T06:42:45+09:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url><url>
